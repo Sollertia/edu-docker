@@ -174,9 +174,9 @@ const LearnMode = ({
 
       <Terminal
         history={terminalHistory}
-        input={terminalInput}
+        inputValue={terminalInput}
         onInputChange={setTerminalInput}
-        onSubmit={handleTerminalSubmit}
+        onKeyDown={handleTerminalSubmit}
         terminalRef={terminalRef}
         title="Terminal"
         height="420px"

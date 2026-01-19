@@ -32,8 +32,8 @@ export const VmDockerSection = () => {
     <VmDockerView
       vmSimulation={vmSimulation}
       showCostDetail={showCostDetail}
-      onRunSimulation={runVmSimulation}
-      onToggleCostDetail={toggleCostDetail}
+      runVmSimulation={runVmSimulation}
+      setShowCostDetail={toggleCostDetail}
     />
   );
 };

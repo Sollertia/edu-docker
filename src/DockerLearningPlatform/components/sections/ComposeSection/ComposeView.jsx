@@ -720,9 +720,9 @@ export const ComposeView = ({
     <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
       <SectionNav
         sections={sectionLabels}
-        currentSection={composeSection}
-        onSectionChange={setComposeSection}
-        accentColor="#f472b6"
+        activeIndex={composeSection}
+        onSelect={setComposeSection}
+        activeColor="#f472b6"
       />
       <SectionComponent />
     </div>
