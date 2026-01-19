@@ -1275,164 +1275,427 @@ Deleted: sha256:abc123def456...`,
         </div>
       )}
 
-      {/* ============ COMPOSE TAB ============ */}
+      {/* ============ COMPOSE TAB (ENHANCED) ============ */}
       {activeTab === 'compose' && (
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          {/* Section Navigation */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
             {['Compose란?', 'services', 'environment', 'volumes', 'networks', 'depends_on', '명령어'].map((name, i) => (
               <button key={i} onClick={() => setComposeSection(i)} style={{ padding: '10px 16px', borderRadius: '10px', border: composeSection === i ? '2px solid #f472b6' : '2px solid transparent', background: composeSection === i ? 'rgba(244,114,182,0.2)' : 'rgba(255,255,255,0.05)', color: composeSection === i ? '#fff' : '#94a3b8', cursor: 'pointer', fontSize: '0.85rem' }}>{name}</button>
             ))}
           </div>
 
-          <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            {composeSection === 0 && (
-              <>
-                <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>🎼 Docker Compose란?</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
-                  <div style={{ padding: '20px', background: 'rgba(239,68,68,0.1)', borderRadius: '14px' }}>
-                    <h4 style={{ color: '#f87171', marginBottom: '12px' }}>😱 Compose 없이</h4>
-                    <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#fca5a5', fontSize: '0.75rem' }}>$ docker run db...<br/>$ docker run redis...<br/>$ docker run app...</code>
-                  </div>
-                  <div style={{ padding: '20px', background: 'rgba(34,197,94,0.1)', borderRadius: '14px' }}>
-                    <h4 style={{ color: '#4ade80', marginBottom: '12px' }}>✅ Compose 사용</h4>
-                    <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#86efac', fontSize: '0.75rem' }}>$ docker compose up -d<br/># 끝!</code>
+          {/* Section 0: What is Compose */}
+          {composeSection === 0 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>🎼 Docker Compose란?</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>여러 컨테이너를 하나의 YAML 파일로 정의하고 관리하는 도구</p>
+
+              {/* Problem & Solution */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+                <div style={{ background: 'rgba(239,68,68,0.1)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(239,68,68,0.3)' }}>
+                  <h4 style={{ color: '#f87171', marginBottom: '16px' }}>😱 Compose 없이</h4>
+                  <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '10px', padding: '12px', fontFamily: 'monospace', fontSize: '0.75rem', color: '#fca5a5' }}>
+                    $ docker network create mynet<br/>
+                    $ docker run -d --name db --network mynet mysql<br/>
+                    $ docker run -d --name redis --network mynet redis<br/>
+                    $ docker run -d --name app --network mynet -p 8080:8080 myapp<br/>
+                    <span style={{ color: '#94a3b8' }}># 매번 순서대로 입력해야 함...</span>
                   </div>
                 </div>
-                <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace' }}>
-                  <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.75rem' }}>{`version: '3.8'
+                <div style={{ background: 'rgba(34,197,94,0.1)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                  <h4 style={{ color: '#4ade80', marginBottom: '16px' }}>✅ Compose 사용</h4>
+                  <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '10px', padding: '12px', fontFamily: 'monospace', fontSize: '0.75rem', color: '#86efac' }}>
+                    $ docker compose up -d<br/><br/>
+                    <span style={{ color: '#94a3b8' }}># 끝! 모든 서비스가 한 번에 실행</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Benefits */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
+                {[
+                  { icon: '📄', title: '선언적 정의', desc: 'YAML 파일로 인프라를 코드화' },
+                  { icon: '🔄', title: '재현 가능', desc: '같은 환경을 어디서든 재현' },
+                  { icon: '👥', title: '팀 공유', desc: 'Git으로 설정 공유 및 버전 관리' }
+                ].map((item, i) => (
+                  <div key={i} style={{ padding: '20px', background: 'rgba(244,114,182,0.1)', borderRadius: '14px', border: '1px solid rgba(244,114,182,0.3)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '8px' }}>{item.icon}</div>
+                    <div style={{ color: '#f9a8d4', fontWeight: '600', marginBottom: '4px' }}>{item.title}</div>
+                    <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Full Example */}
+              <div style={{ background: '#0d1117', borderRadius: '16px', padding: '20px', fontFamily: '"JetBrains Mono", monospace' }}>
+                <div style={{ color: '#8b949e', fontSize: '0.8rem', marginBottom: '12px' }}>📄 docker-compose.yml (전체 예시)</div>
+                <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.75rem', lineHeight: '1.6' }}>{`version: '3.8'
+
 services:
-  app:
+  app:                          # Spring Boot
     build: .
-    ports: ["8080:8080"]
-    depends_on: [db, redis]
-  db:
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - REDIS_HOST=redis
+    depends_on:
+      - db
+      - redis
+
+  db:                           # MySQL
     image: mysql:8.0
-    volumes: [db-data:/var/lib/mysql]
-  redis:
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: myapp
+
+  redis:                        # Redis
     image: redis:alpine
+
 volumes:
   db-data:`}</pre>
-                </div>
-              </>
-            )}
+              </div>
+            </div>
+          )}
 
-            {composeSection === 1 && (
-              <>
-                <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>📦 services</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          {/* Section 1: services */}
+          {composeSection === 1 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>📦 services</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>실행할 컨테이너들을 정의하는 핵심 섹션</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div>
+                  <div style={{ background: '#0d1117', borderRadius: '16px', padding: '20px', fontFamily: '"JetBrains Mono", monospace', marginBottom: '20px' }}>
+                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem', lineHeight: '1.7' }}>{`services:
+  `}<span style={{ color: '#7ee787' }}>app</span>{`:                    # 서비스 이름
+    `}<span style={{ color: '#ff7b72' }}>build</span>{`: .               # Dockerfile 경로
+    `}<span style={{ color: '#ff7b72' }}>ports</span>{`:
+      - "8080:8080"
+
+  `}<span style={{ color: '#79c0ff' }}>db</span>{`:
+    `}<span style={{ color: '#ff7b72' }}>image</span>{`: mysql:8.0      # Docker Hub 이미지
+    `}<span style={{ color: '#ff7b72' }}>restart</span>{`: always       # 재시작 정책`}</pre>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ padding: '16px', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                    <h4 style={{ color: '#4ade80', marginBottom: '8px' }}>build vs image</h4>
+                    <ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li><code>build: .</code> → Dockerfile로 이미지 빌드</li>
+                      <li><code>image: mysql</code> → 기존 이미지 사용</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ padding: '16px', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                    <h4 style={{ color: '#fbbf24', marginBottom: '8px' }}>restart 정책</h4>
+                    <ul style={{ margin: 0, paddingLeft: '18px', color: '#fef3c7', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li><code>no</code> - 재시작 안 함 (기본값)</li>
+                      <li><code>always</code> - 항상 재시작</li>
+                      <li><code>on-failure</code> - 에러 시에만</li>
+                      <li><code>unless-stopped</code> - 수동 중지 전까지</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ padding: '16px', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', border: '1px solid rgba(139,92,246,0.3)' }}>
+                    <h4 style={{ color: '#a78bfa', marginBottom: '8px' }}>💡 서비스 이름 = 호스트명</h4>
+                    <p style={{ color: '#c4b5fd', fontSize: '0.85rem', margin: 0 }}>
+                      <code>app</code>에서 <code>db:3306</code>으로 접속 가능!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Section 2: environment */}
+          {composeSection === 2 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>⚙️ environment</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>컨테이너에 환경변수 전달하기</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div>
+                  <h4 style={{ color: '#e2e8f0', marginBottom: '16px' }}>방법 1: 직접 정의 (리스트)</h4>
+                  <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace', marginBottom: '20px' }}>
+                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem' }}>{`services:
+  app:
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root`}</pre>
+                  </div>
+
+                  <h4 style={{ color: '#e2e8f0', marginBottom: '16px' }}>방법 2: 직접 정의 (맵)</h4>
                   <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace' }}>
                     <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem' }}>{`services:
   app:
-    build: .          # Dockerfile 빌드
-    ports: ["8080:8080"]
-  db:
-    image: mysql:8.0  # 이미지 사용
-    restart: always`}</pre>
-                  </div>
-                  <div>
-                    <div style={{ padding: '14px', background: 'rgba(34,197,94,0.1)', borderRadius: '10px', marginBottom: '12px' }}><h4 style={{ color: '#4ade80', marginBottom: '8px', fontSize: '0.9rem' }}>build vs image</h4><ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.8rem' }}><li>build: Dockerfile 빌드</li><li>image: 기존 이미지 사용</li></ul></div>
-                    <div style={{ padding: '14px', background: 'rgba(139,92,246,0.1)', borderRadius: '10px' }}><h4 style={{ color: '#a78bfa', marginBottom: '8px', fontSize: '0.9rem' }}>💡 서비스명 = 호스트명</h4><p style={{ color: '#c4b5fd', fontSize: '0.8rem', margin: 0 }}>app에서 db:3306으로 접속!</p></div>
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root`}</pre>
                   </div>
                 </div>
-              </>
-            )}
 
-            {composeSection === 2 && (
-              <>
-                <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>⚙️ environment</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                  <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace' }}>
-                    <div style={{ color: '#8b949e', fontSize: '0.75rem', marginBottom: '8px' }}>방법 1: 직접 정의</div>
-                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem' }}>{`environment:
-  - DB_HOST=db
-  - DB_PORT=3306`}</pre>
+                <div>
+                  <h4 style={{ color: '#e2e8f0', marginBottom: '16px' }}>방법 3: .env 파일 사용 (권장)</h4>
+                  <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace', marginBottom: '16px' }}>
+                    <div style={{ color: '#8b949e', fontSize: '0.75rem', marginBottom: '8px' }}>📄 .env</div>
+                    <pre style={{ color: '#86efac', margin: 0, fontSize: '0.8rem' }}>{`DB_PASSWORD=secretpassword
+REDIS_URL=redis://redis:6379`}</pre>
                   </div>
                   <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace' }}>
-                    <div style={{ color: '#8b949e', fontSize: '0.75rem', marginBottom: '8px' }}>방법 2: .env 파일</div>
-                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem' }}>{`env_file:
-  - .env`}</pre>
-                  </div>
-                </div>
-                <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(239,68,68,0.1)', borderRadius: '10px' }}><span style={{ color: '#f87171', fontSize: '0.85rem' }}>⚠️ .env 파일은 .gitignore에 추가하세요!</span></div>
-              </>
-            )}
-
-            {composeSection === 3 && (
-              <>
-                <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>💾 volumes</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                  <div style={{ padding: '20px', background: 'rgba(34,197,94,0.1)', borderRadius: '14px' }}>
-                    <h4 style={{ color: '#4ade80', marginBottom: '12px' }}>📦 Named Volume</h4>
-                    <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#86efac', fontSize: '0.8rem' }}>db-data:/var/lib/mysql</code>
-                    <p style={{ color: '#bbf7d0', fontSize: '0.8rem', marginTop: '8px' }}>운영 환경 권장</p>
-                  </div>
-                  <div style={{ padding: '20px', background: 'rgba(251,191,36,0.1)', borderRadius: '14px' }}>
-                    <h4 style={{ color: '#fbbf24', marginBottom: '12px' }}>📁 Bind Mount</h4>
-                    <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#fef3c7', fontSize: '0.8rem' }}>./data:/app/data</code>
-                    <p style={{ color: '#fef3c7', fontSize: '0.8rem', marginTop: '8px' }}>개발 환경 유용</p>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {composeSection === 4 && (
-              <>
-                <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>🌐 networks</h3>
-                <div style={{ padding: '16px', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', marginBottom: '20px' }}><p style={{ color: '#bbf7d0', fontSize: '0.9rem', margin: 0 }}>✅ 기본 네트워크가 자동 생성됩니다 ({'{프로젝트명}_default'})</p></div>
-                <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace' }}>
-                  <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem' }}>{`services:
+                    <div style={{ color: '#8b949e', fontSize: '0.75rem', marginBottom: '8px' }}>📄 docker-compose.yml</div>
+                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem' }}>{`services:
   app:
-    networks: [frontend, backend]
+    env_file:
+      - .env`}</pre>
+                  </div>
+
+                  <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(239,68,68,0.1)', borderRadius: '10px', border: '1px solid rgba(239,68,68,0.3)' }}>
+                    <div style={{ color: '#f87171', fontSize: '0.85rem' }}>⚠️ <strong>.env 파일은 .gitignore에 추가!</strong><br/>비밀번호 등 민감 정보 유출 방지</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Section 3: volumes */}
+          {composeSection === 3 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>💾 volumes</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>데이터를 영구 저장하고 컨테이너 간 공유</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div>
+                  <div style={{ background: '#0d1117', borderRadius: '16px', padding: '20px', fontFamily: '"JetBrains Mono", monospace' }}>
+                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.75rem', lineHeight: '1.7' }}>{`services:
   db:
-    networks: [backend]  # app만 접근 가능!
+    image: mysql:8.0
+    volumes:
+      `}<span style={{ color: '#86efac' }}># Named Volume (권장)</span>{`
+      - db-data:/var/lib/mysql
+
+      `}<span style={{ color: '#fbbf24' }}># Bind Mount (개발용)</span>{`
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+`}<span style={{ color: '#79c0ff' }}>volumes:</span>{`                    # 최상위에 정의
+  `}<span style={{ color: '#7ee787' }}>db-data</span>{`:                 # 볼륨 이름
+    driver: local`}</pre>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ padding: '16px', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                    <h4 style={{ color: '#4ade80', marginBottom: '8px' }}>📦 Named Volume</h4>
+                    <ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li>Docker가 관리하는 볼륨</li>
+                      <li>컨테이너 삭제해도 데이터 유지</li>
+                      <li><strong>운영 환경에 권장</strong></li>
+                    </ul>
+                  </div>
+
+                  <div style={{ padding: '16px', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                    <h4 style={{ color: '#fbbf24', marginBottom: '8px' }}>📁 Bind Mount</h4>
+                    <ul style={{ margin: 0, paddingLeft: '18px', color: '#fef3c7', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li>호스트 경로를 직접 마운트</li>
+                      <li>코드 변경 실시간 반영</li>
+                      <li><strong>개발 환경에 유용</strong></li>
+                    </ul>
+                  </div>
+
+                  <div style={{ padding: '16px', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', border: '1px solid rgba(139,92,246,0.3)' }}>
+                    <h4 style={{ color: '#a78bfa', marginBottom: '8px' }}>💡 볼륨 형식</h4>
+                    <code style={{ color: '#c4b5fd', fontSize: '0.85rem' }}>소스:대상[:옵션]</code>
+                    <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '4px' }}>예: db-data:/var/lib/mysql:ro (읽기전용)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Section 4: networks */}
+          {composeSection === 4 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>🌐 networks</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>서비스 간 통신을 위한 가상 네트워크</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div>
+                  <div style={{ padding: '16px', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', border: '1px solid rgba(34,197,94,0.3)', marginBottom: '20px' }}>
+                    <h4 style={{ color: '#4ade80', marginBottom: '8px' }}>✅ 기본 네트워크 (자동)</h4>
+                    <p style={{ color: '#bbf7d0', fontSize: '0.85rem', margin: 0 }}>
+                      networks를 정의하지 않아도<br/>
+                      <strong>{`{프로젝트명}_default`}</strong> 네트워크가 자동 생성됨!
+                    </p>
+                  </div>
+
+                  <div style={{ background: '#0d1117', borderRadius: '16px', padding: '20px', fontFamily: '"JetBrains Mono", monospace' }}>
+                    <div style={{ color: '#8b949e', fontSize: '0.75rem', marginBottom: '8px' }}>커스텀 네트워크 정의</div>
+                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem', lineHeight: '1.7' }}>{`services:
+  app:
+    networks:
+      - frontend
+      - backend
+
+  db:
+    networks:
+      - backend    # app만 접근 가능!
 
 networks:
   frontend:
   backend:`}</pre>
-                </div>
-              </>
-            )}
-
-            {composeSection === 5 && (
-              <>
-                <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>🔗 depends_on</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                  <div style={{ background: '#0d1117', borderRadius: '12px', padding: '16px', fontFamily: 'monospace' }}>
-                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem' }}>{`services:
-  app:
-    depends_on:
-      - db
-      - redis`}</pre>
-                  </div>
-                  <div>
-                    <div style={{ padding: '14px', background: 'rgba(239,68,68,0.1)', borderRadius: '10px', marginBottom: '12px' }}><h4 style={{ color: '#f87171', marginBottom: '8px', fontSize: '0.9rem' }}>⚠️ 주의</h4><p style={{ color: '#fca5a5', fontSize: '0.8rem', margin: 0 }}>시작 순서만 보장, 준비 완료 대기 X</p></div>
-                    <div style={{ padding: '14px', background: 'rgba(34,197,94,0.1)', borderRadius: '10px' }}><h4 style={{ color: '#4ade80', marginBottom: '8px', fontSize: '0.9rem' }}>✅ 해결책</h4><p style={{ color: '#bbf7d0', fontSize: '0.8rem', margin: '4px 0 0 0' }}>앱에서 연결 재시도 로직 구현</p></div>
                   </div>
                 </div>
-              </>
-            )}
 
-            {composeSection === 6 && (
-              <>
-                <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>⌨️ Compose 명령어</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                  {[
-                    { cmd: 'docker compose up -d', desc: '모든 서비스 시작', icon: '▶️' },
-                    { cmd: 'docker compose down', desc: '모든 서비스 중지', icon: '⏹️' },
-                    { cmd: 'docker compose logs -f', desc: '실시간 로그', icon: '📜' },
-                    { cmd: 'docker compose ps', desc: '상태 확인', icon: '📊' },
-                    { cmd: 'docker compose build', desc: '이미지 빌드', icon: '🔨' },
-                    { cmd: 'docker compose exec app sh', desc: '컨테이너 접속', icon: '💻' },
-                  ].map((item, i) => (
-                    <div key={i} style={{ padding: '14px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <span style={{ fontSize: '1.3rem' }}>{item.icon}</span>
-                      <div><code style={{ color: '#86efac', fontSize: '0.8rem' }}>{item.cmd}</code><div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '2px' }}>{item.desc}</div></div>
+                <div>
+                  <div style={{ padding: '20px', background: 'rgba(0,0,0,0.2)', borderRadius: '14px', marginBottom: '16px' }}>
+                    <h4 style={{ color: '#e2e8f0', marginBottom: '16px', textAlign: 'center' }}>네트워크 격리 예시</h4>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <div style={{ padding: '16px', background: 'rgba(34,197,94,0.2)', borderRadius: '10px', textAlign: 'center' }}>
+                        <div style={{ color: '#86efac', fontWeight: '600', marginBottom: '8px' }}>frontend</div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <span style={{ padding: '4px 8px', background: 'rgba(34,197,94,0.3)', borderRadius: '4px', fontSize: '0.75rem' }}>nginx</span>
+                          <span style={{ padding: '4px 8px', background: 'rgba(34,197,94,0.3)', borderRadius: '4px', fontSize: '0.75rem' }}>app</span>
+                        </div>
+                      </div>
+                      <div style={{ padding: '16px', background: 'rgba(139,92,246,0.2)', borderRadius: '10px', textAlign: 'center' }}>
+                        <div style={{ color: '#c4b5fd', fontWeight: '600', marginBottom: '8px' }}>backend</div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <span style={{ padding: '4px 8px', background: 'rgba(139,92,246,0.3)', borderRadius: '4px', fontSize: '0.75rem' }}>app</span>
+                          <span style={{ padding: '4px 8px', background: 'rgba(139,92,246,0.3)', borderRadius: '4px', fontSize: '0.75rem' }}>db</span>
+                        </div>
+                      </div>
                     </div>
-                  ))}
+                    <div style={{ textAlign: 'center', marginTop: '12px', color: '#94a3b8', fontSize: '0.8rem' }}>
+                      nginx는 db에 직접 접근 불가! (보안 강화)
+                    </div>
+                  </div>
+
+                  <div style={{ padding: '16px', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                    <h4 style={{ color: '#fbbf24', marginBottom: '8px' }}>💡 왜 네트워크를 분리할까?</h4>
+                    <ul style={{ margin: 0, paddingLeft: '18px', color: '#fef3c7', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li>보안: 불필요한 접근 차단</li>
+                      <li>격리: 서비스 그룹별 분리</li>
+                      <li>관리: 네트워크 트래픽 제어</li>
+                    </ul>
+                  </div>
                 </div>
-              </>
-            )}
-          </div>
+              </div>
+            </div>
+          )}
+
+          {/* Section 5: depends_on */}
+          {composeSection === 5 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>🔗 depends_on</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>서비스 시작 순서를 제어</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div>
+                  <div style={{ background: '#0d1117', borderRadius: '16px', padding: '20px', fontFamily: '"JetBrains Mono", monospace', marginBottom: '20px' }}>
+                    <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem', lineHeight: '1.7' }}>{`services:
+  app:
+    build: .
+    `}<span style={{ color: '#ff7b72' }}>depends_on</span>{`:
+      - db          # db가 먼저 시작
+      - redis       # redis도 먼저 시작
+
+  db:
+    image: mysql:8.0
+
+  redis:
+    image: redis:alpine`}</pre>
+                  </div>
+
+                  <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '12px', padding: '16px' }}>
+                    <div style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '12px' }}>시작 순서:</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ padding: '8px 12px', background: 'rgba(59,130,246,0.3)', borderRadius: '8px', color: '#93c5fd' }}>db</span>
+                      <span style={{ color: '#94a3b8' }}>→</span>
+                      <span style={{ padding: '8px 12px', background: 'rgba(239,68,68,0.3)', borderRadius: '8px', color: '#fca5a5' }}>redis</span>
+                      <span style={{ color: '#94a3b8' }}>→</span>
+                      <span style={{ padding: '8px 12px', background: 'rgba(34,197,94,0.3)', borderRadius: '8px', color: '#86efac' }}>app</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ padding: '16px', background: 'rgba(239,68,68,0.1)', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.3)' }}>
+                    <h4 style={{ color: '#f87171', marginBottom: '8px' }}>⚠️ 중요한 제한사항</h4>
+                    <p style={{ color: '#fca5a5', fontSize: '0.85rem', margin: 0 }}>
+                      depends_on은 <strong>시작 순서만</strong> 보장!<br/>
+                      서비스가 <strong>"준비 완료"</strong>될 때까지 기다리지 않음
+                    </p>
+                  </div>
+
+                  <div style={{ padding: '16px', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                    <h4 style={{ color: '#4ade80', marginBottom: '8px' }}>✅ 해결 방법</h4>
+                    <ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li>앱에서 연결 재시도 로직 구현</li>
+                      <li>healthcheck 옵션 사용</li>
+                      <li>wait-for-it.sh 스크립트 사용</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ padding: '16px', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                    <h4 style={{ color: '#fbbf24', marginBottom: '8px' }}>💡 healthcheck 예시</h4>
+                    <code style={{ color: '#fef3c7', fontSize: '0.8rem', display: 'block', background: 'rgba(0,0,0,0.2)', padding: '8px', borderRadius: '6px' }}>
+                      depends_on:<br/>
+                      &nbsp;&nbsp;db:<br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;condition: service_healthy
+                    </code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Section 6: Commands */}
+          {composeSection === 6 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>⌨️ Compose 명령어</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>자주 사용하는 docker compose 명령어</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+                {[
+                  { cmd: 'docker compose up -d', desc: '모든 서비스 백그라운드 시작', icon: '▶️', color: '#22c55e' },
+                  { cmd: 'docker compose down', desc: '모든 서비스 중지 및 삭제', icon: '⏹️', color: '#ef4444' },
+                  { cmd: 'docker compose logs -f', desc: '모든 서비스 로그 실시간 확인', icon: '📜', color: '#3b82f6' },
+                  { cmd: 'docker compose logs -f app', desc: '특정 서비스 로그만 확인', icon: '🔍', color: '#8b5cf6' },
+                  { cmd: 'docker compose ps', desc: '서비스 상태 확인', icon: '📊', color: '#f59e0b' },
+                  { cmd: 'docker compose build', desc: '이미지 다시 빌드', icon: '🔨', color: '#ec4899' },
+                  { cmd: 'docker compose exec app sh', desc: '실행 중인 서비스에 접속', icon: '💻', color: '#06b6d4' },
+                  { cmd: 'docker compose down -v', desc: '볼륨까지 함께 삭제', icon: '🗑️', color: '#dc2626' },
+                ].map((item, i) => (
+                  <div key={i} style={{ padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <code style={{ display: 'block', color: item.color, fontSize: '0.85rem', marginBottom: '4px' }}>{item.cmd}</code>
+                      <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{item.desc}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: '24px', padding: '16px', background: 'rgba(251,191,36,0.1)', borderRadius: '12px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                <h4 style={{ color: '#fbbf24', marginBottom: '12px' }}>💡 자주 쓰는 워크플로우</h4>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+                  <code style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', color: '#86efac' }}>up -d</code>
+                  <span style={{ color: '#94a3b8' }}>→</span>
+                  <code style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', color: '#93c5fd' }}>logs -f</code>
+                  <span style={{ color: '#94a3b8' }}>→</span>
+                  <span style={{ color: '#fef3c7' }}>개발/테스트</span>
+                  <span style={{ color: '#94a3b8' }}>→</span>
+                  <code style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', color: '#fca5a5' }}>down</code>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
