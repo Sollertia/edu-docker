@@ -49,7 +49,8 @@ export const useWorkflow = () => {
       {
         input: workflowInput,
         isCorrect,
-        output: isCorrect ? expected.output : `❌ 틀렸습니다.\n정답: ${expected.cmd}`
+        output: isCorrect ? expected.output : `❌ 틀렸습니다.\n정답: ${expected.cmd}`,
+        stepIndex: workflowStep  // 해당 스텝 번호 저장
       }
     ]);
     setWorkflowInput('');

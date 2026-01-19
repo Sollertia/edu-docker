@@ -351,7 +351,7 @@ const WorkflowTerminal = ({
           }}>
             {entry.output}
           </pre>
-          {entry.isCorrect && i === history.length - 1 && currentStep < totalSteps && (
+          {entry.isCorrect && entry.stepIndex !== undefined && (
             <div style={{
               marginTop: '8px',
               padding: '8px',
@@ -360,7 +360,7 @@ const WorkflowTerminal = ({
               color: '#86efac',
               fontSize: '0.75rem'
             }}>
-              ✅ {workflowSteps[Math.min(currentStep, totalSteps - 1)].next}
+              ✅ {workflowSteps[entry.stepIndex].next}
             </div>
           )}
         </div>

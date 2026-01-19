@@ -32,7 +32,7 @@ export const WORKFLOW_STEPS = [
 Successfully built abc123def456
 Successfully tagged myapp:1.0`,
     tip: '💡 -t 옵션으로 이미지 이름:태그를 지정합니다',
-    next: '이미지가 생성되었습니다. 이제 컨테이너를 실행해볼까요?'
+    next: '이미지가 생성되었습니다. 생성된 이미지를 확인해봅시다.'
   },
   {
     step: 2,
