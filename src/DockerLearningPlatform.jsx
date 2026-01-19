@@ -448,119 +448,391 @@ Deleted: sha256:abc123def456...`,
         </div>
       )}
 
-      {/* ============ CONCEPT TAB ============ */}
+      {/* ============ CORE CONCEPTS TAB (ENHANCED) ============ */}
       {activeTab === 'concept' && (
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          {/* Section Navigation */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
             {['이미지 vs 컨테이너', '레이어 구조', '생명주기', '레지스트리', '볼륨'].map((name, i) => (
               <button key={i} onClick={() => setConceptSection(i)} style={{ padding: '10px 18px', borderRadius: '10px', border: conceptSection === i ? '2px solid #00d4ff' : '2px solid transparent', background: conceptSection === i ? 'rgba(0,212,255,0.2)' : 'rgba(255,255,255,0.05)', color: conceptSection === i ? '#fff' : '#94a3b8', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '500' }}>{name}</button>
             ))}
           </div>
 
+          {/* Section 0: Image vs Container */}
           {conceptSection === 0 && (
             <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#00d4ff' }}>📦 이미지 vs 🏃 컨테이너</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#00d4ff' }}>📦 이미지 vs 🏃 컨테이너</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>Docker의 가장 기본이 되는 두 가지 개념</p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+                {/* Image */}
                 <div style={{ background: 'linear-gradient(180deg, rgba(59,130,246,0.15), rgba(59,130,246,0.02))', borderRadius: '16px', padding: '24px', border: '2px solid rgba(59,130,246,0.4)' }}>
-                  <div style={{ textAlign: 'center', marginBottom: '20px' }}><div style={{ fontSize: '3rem' }}>📦</div><h4 style={{ color: '#60a5fa' }}>이미지 (Image)</h4><div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>읽기 전용 템플릿</div></div>
-                  <ul style={{ margin: 0, paddingLeft: '20px', color: '#bfdbfe', fontSize: '0.85rem', lineHeight: '1.8' }}>
-                    <li><strong>불변(Immutable)</strong> - 한번 만들면 변경 불가</li>
-                    <li><strong>레이어 구조</strong> - 여러 층으로 구성</li>
-                    <li><strong>공유 가능</strong> - Docker Hub에 업로드/다운로드</li>
-                  </ul>
+                  <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <div style={{ fontSize: '3.5rem', marginBottom: '8px' }}>📦</div>
+                    <h4 style={{ color: '#60a5fa', fontSize: '1.3rem' }}>이미지 (Image)</h4>
+                    <div style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '4px' }}>읽기 전용 템플릿</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+                    <div style={{ color: '#93c5fd', fontSize: '0.9rem', marginBottom: '12px', fontWeight: '600' }}>🎯 핵심 특징</div>
+                    <ul style={{ margin: 0, paddingLeft: '20px', color: '#bfdbfe', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li><strong>불변(Immutable)</strong> - 한번 만들면 변경 불가</li>
+                      <li><strong>레이어 구조</strong> - 여러 층으로 구성</li>
+                      <li><strong>공유 가능</strong> - Docker Hub에 업로드/다운로드</li>
+                      <li><strong>버전 관리</strong> - 태그로 버전 구분</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ background: 'rgba(251,191,36,0.1)', borderRadius: '10px', padding: '12px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                    <div style={{ color: '#fbbf24', fontSize: '0.85rem', marginBottom: '8px' }}>🍳 비유</div>
+                    <div style={{ color: '#fef3c7', fontSize: '0.85rem' }}>
+                      <strong>레시피</strong> - 요리 방법이 적힌 문서<br/>
+                      <strong>붕어빵 틀</strong> - 같은 모양을 찍어내는 틀<br/>
+                      <strong>설계도</strong> - 건물을 짓기 위한 도면
+                    </div>
+                  </div>
                 </div>
+
+                {/* Container */}
                 <div style={{ background: 'linear-gradient(180deg, rgba(34,197,94,0.15), rgba(34,197,94,0.02))', borderRadius: '16px', padding: '24px', border: '2px solid rgba(34,197,94,0.4)' }}>
-                  <div style={{ textAlign: 'center', marginBottom: '20px' }}><div style={{ fontSize: '3rem' }}>🏃</div><h4 style={{ color: '#4ade80' }}>컨테이너 (Container)</h4><div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>실행 중인 인스턴스</div></div>
-                  <ul style={{ margin: 0, paddingLeft: '20px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
-                    <li><strong>실행 상태</strong> - 이미지가 메모리에 올라간 것</li>
-                    <li><strong>격리된 환경</strong> - 독립적인 프로세스 공간</li>
-                    <li><strong>일시적</strong> - 삭제하면 변경사항도 삭제</li>
-                  </ul>
+                  <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <div style={{ fontSize: '3.5rem', marginBottom: '8px' }}>🏃</div>
+                    <h4 style={{ color: '#4ade80', fontSize: '1.3rem' }}>컨테이너 (Container)</h4>
+                    <div style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '4px' }}>실행 중인 인스턴스</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+                    <div style={{ color: '#86efac', fontSize: '0.9rem', marginBottom: '12px', fontWeight: '600' }}>🎯 핵심 특징</div>
+                    <ul style={{ margin: 0, paddingLeft: '20px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li><strong>실행 상태</strong> - 이미지가 메모리에 올라간 것</li>
+                      <li><strong>격리된 환경</strong> - 독립적인 프로세스 공간</li>
+                      <li><strong>쓰기 가능</strong> - 파일 생성/수정 가능 (레이어)</li>
+                      <li><strong>일시적</strong> - 삭제하면 변경사항도 삭제</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ background: 'rgba(251,191,36,0.1)', borderRadius: '10px', padding: '12px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                    <div style={{ color: '#fbbf24', fontSize: '0.85rem', marginBottom: '8px' }}>🍳 비유</div>
+                    <div style={{ color: '#fef3c7', fontSize: '0.85rem' }}>
+                      <strong>완성된 요리</strong> - 레시피로 만든 음식<br/>
+                      <strong>구워진 붕어빵</strong> - 틀에서 나온 실제 빵<br/>
+                      <strong>지어진 건물</strong> - 설계도로 완성된 집
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Relationship */}
+              <div style={{ background: 'rgba(139,92,246,0.1)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(139,92,246,0.3)' }}>
+                <h4 style={{ color: '#c4b5fd', marginBottom: '16px', textAlign: 'center' }}>💡 핵심 관계</h4>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <code style={{ display: 'block', padding: '8px 16px', background: 'rgba(59,130,246,0.3)', borderRadius: '8px', color: '#93c5fd', marginBottom: '4px' }}>myapp:1.0</code>
+                    <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>1개의 이미지</span>
+                  </div>
+                  <div style={{ fontSize: '1.5rem' }}>→</div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {[1, 2, 3].map(n => (
+                        <code key={n} style={{ padding: '8px 12px', background: 'rgba(34,197,94,0.3)', borderRadius: '8px', color: '#86efac', fontSize: '0.8rem' }}>컨테이너{n}</code>
+                      ))}
+                    </div>
+                    <span style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '4px', display: 'block' }}>N개의 컨테이너 생성 가능!</span>
+                  </div>
+                </div>
+                <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', textAlign: 'center' }}>
+                  <code style={{ color: '#86efac' }}>docker run myapp:1.0</code>
+                  <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}> → 이미지로부터 새 컨테이너 생성</span>
                 </div>
               </div>
             </div>
           )}
 
+          {/* Section 1: Layer Structure */}
           {conceptSection === 1 && (
             <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#a78bfa' }}>📚 이미지 레이어 구조</h3>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#a78bfa' }}>📚 이미지 레이어 구조</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>Docker 이미지는 여러 개의 읽기 전용 레이어로 구성됩니다</p>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '16px', padding: '20px' }}>
-                  {[{ name: 'Container Layer (R/W)', color: '#22c55e' }, { name: 'ENTRYPOINT', color: '#ef4444' }, { name: 'COPY app.jar', color: '#06b6d4' }, { name: 'RUN apt-get', color: '#8b5cf6' }, { name: 'FROM openjdk:17', color: '#3b82f6' }].map((layer, i) => (
-                    <div key={i} style={{ padding: '12px', background: `${layer.color}30`, borderLeft: `4px solid ${layer.color}`, borderRadius: '0 8px 8px 0', marginBottom: '4px' }}>
-                      <span style={{ color: layer.color, fontWeight: '600', fontSize: '0.85rem' }}>{layer.name}</span>
-                    </div>
-                  ))}
-                </div>
+                {/* Layer Visualization */}
                 <div>
-                  <div style={{ padding: '16px', background: 'rgba(34,197,94,0.1)', borderRadius: '12px', marginBottom: '12px' }}><h4 style={{ color: '#4ade80', marginBottom: '8px' }}>✅ 레이어의 장점</h4><ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.85rem' }}><li>캐싱 - 변경된 레이어만 재빌드</li><li>공유 - 같은 레이어는 여러 이미지가 공유</li></ul></div>
-                  <div style={{ padding: '16px', background: 'rgba(251,191,36,0.1)', borderRadius: '12px' }}><h4 style={{ color: '#fbbf24', marginBottom: '8px' }}>⚠️ 최적화 팁</h4><ul style={{ margin: 0, paddingLeft: '18px', color: '#fef3c7', fontSize: '0.85rem' }}><li>자주 변경되는 레이어는 나중에</li><li>RUN 명령어는 하나로 합치기</li></ul></div>
+                  <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '16px', padding: '20px' }}>
+                    <div style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '16px' }}>🐳 이미지 레이어 (아래→위 순서로 쌓임)</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {[
+                        { name: 'Container Layer (R/W)', color: '#22c55e', desc: '컨테이너 실행 시 추가', rw: true },
+                        { name: 'ENTRYPOINT java -jar', color: '#ef4444', desc: '실행 명령' },
+                        { name: 'COPY app.jar', color: '#06b6d4', desc: '애플리케이션 코드' },
+                        { name: 'RUN apt-get install', color: '#8b5cf6', desc: '의존성 설치' },
+                        { name: 'FROM openjdk:17', color: '#3b82f6', desc: '베이스 이미지' },
+                      ].map((layer, i) => (
+                        <div key={i} style={{ padding: '12px 16px', background: `${layer.color}30`, borderLeft: `4px solid ${layer.color}`, borderRadius: '0 8px 8px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ color: layer.color, fontWeight: '600', fontSize: '0.85rem' }}>{layer.name}</span>
+                            {layer.rw && <span style={{ marginLeft: '8px', padding: '2px 6px', background: 'rgba(34,197,94,0.3)', borderRadius: '4px', fontSize: '0.7rem', color: '#86efac' }}>쓰기 가능</span>}
+                          </div>
+                          <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{layer.desc}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Layer Explanation */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ background: 'rgba(34,197,94,0.1)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                    <h4 style={{ color: '#4ade80', marginBottom: '12px' }}>✅ 레이어의 장점</h4>
+                    <ul style={{ margin: 0, paddingLeft: '20px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li><strong>캐싱</strong> - 변경된 레이어만 다시 빌드</li>
+                      <li><strong>공유</strong> - 같은 레이어는 여러 이미지가 공유</li>
+                      <li><strong>효율성</strong> - 디스크 공간 절약</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ background: 'rgba(251,191,36,0.1)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                    <h4 style={{ color: '#fbbf24', marginBottom: '12px' }}>⚠️ 레이어 최적화 팁</h4>
+                    <ul style={{ margin: 0, paddingLeft: '20px', color: '#fef3c7', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                      <li>자주 변경되는 레이어는 <strong>나중에</strong> 배치</li>
+                      <li>RUN 명령어는 <strong>하나로 합치기</strong></li>
+                      <li>불필요한 파일은 <strong>.dockerignore</strong>로 제외</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ background: 'rgba(239,68,68,0.1)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(239,68,68,0.3)' }}>
+                    <h4 style={{ color: '#f87171', marginBottom: '12px' }}>❌ 흔한 실수</h4>
+                    <div style={{ color: '#fca5a5', fontSize: '0.85rem' }}>
+                      <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>COPY . .</code>를 먼저 하면<br/>
+                      코드 한 줄만 바꿔도 전체 레이어 재빌드!
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
+          {/* Section 2: Lifecycle */}
           {conceptSection === 2 && (
             <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f59e0b' }}>🔄 컨테이너 생명주기</h3>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '24px' }}>
-                {[{ state: '이미지', icon: '📦', color: '#3b82f6' }, { state: 'Running', icon: '🟢', color: '#22c55e' }, { state: 'Stopped', icon: '🟡', color: '#f59e0b' }, { state: '삭제됨', icon: '❌', color: '#ef4444' }].map((item, i) => (
-                  <React.Fragment key={i}>
-                    <div style={{ textAlign: 'center', padding: '16px 20px', background: `${item.color}20`, borderRadius: '12px', border: `2px solid ${item.color}40` }}>
-                      <div style={{ fontSize: '1.5rem' }}>{item.icon}</div>
-                      <div style={{ color: item.color, fontWeight: '600', fontSize: '0.85rem' }}>{item.state}</div>
-                    </div>
-                    {i < 3 && <div style={{ color: '#94a3b8' }}>→</div>}
-                  </React.Fragment>
-                ))}
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                {[{ cmd: 'docker run', desc: '이미지→Running' }, { cmd: 'docker stop', desc: 'Running→Stopped' }, { cmd: 'docker start', desc: 'Stopped→Running' }, { cmd: 'docker rm', desc: 'Stopped→삭제' }].map((item, i) => (
-                  <div key={i} style={{ padding: '10px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', textAlign: 'center' }}>
-                    <code style={{ color: '#86efac', fontSize: '0.8rem' }}>{item.cmd}</code>
-                    <div style={{ color: '#94a3b8', fontSize: '0.7rem', marginTop: '4px' }}>{item.desc}</div>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f59e0b' }}>🔄 컨테이너 생명주기</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>컨테이너의 상태 변화와 관련 명령어</p>
+
+              {/* Lifecycle Diagram */}
+              <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '16px', padding: '24px', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                  {[
+                    { state: '이미지', icon: '📦', color: '#3b82f6', cmd: null },
+                    { arrow: 'docker run', color: '#22c55e' },
+                    { state: 'Running', icon: '🟢', color: '#22c55e', cmd: 'docker ps' },
+                    { arrow: 'docker stop', color: '#f59e0b' },
+                    { state: 'Stopped', icon: '🟡', color: '#f59e0b', cmd: 'docker ps -a' },
+                    { arrow: 'docker rm', color: '#ef4444' },
+                    { state: '삭제됨', icon: '❌', color: '#ef4444', cmd: null },
+                  ].map((item, i) => (
+                    item.arrow ? (
+                      <div key={i} style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '1.2rem', color: item.color }}>→</div>
+                        <code style={{ fontSize: '0.7rem', color: item.color }}>{item.arrow}</code>
+                      </div>
+                    ) : (
+                      <div key={i} style={{ textAlign: 'center', padding: '16px 20px', background: `${item.color}20`, borderRadius: '12px', border: `2px solid ${item.color}40`, minWidth: '100px' }}>
+                        <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>{item.icon}</div>
+                        <div style={{ color: item.color, fontWeight: '600', fontSize: '0.85rem' }}>{item.state}</div>
+                        {item.cmd && <code style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{item.cmd}</code>}
+                      </div>
+                    )
+                  ))}
+                </div>
+
+                {/* Additional transitions */}
+                <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
+                  <div style={{ padding: '12px 16px', background: 'rgba(34,197,94,0.15)', borderRadius: '10px', textAlign: 'center' }}>
+                    <code style={{ color: '#86efac', fontSize: '0.8rem' }}>docker start</code>
+                    <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '4px' }}>Stopped → Running</div>
                   </div>
-                ))}
+                  <div style={{ padding: '12px 16px', background: 'rgba(139,92,246,0.15)', borderRadius: '10px', textAlign: 'center' }}>
+                    <code style={{ color: '#c4b5fd', fontSize: '0.8rem' }}>docker restart</code>
+                    <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '4px' }}>Running → Running</div>
+                  </div>
+                  <div style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.15)', borderRadius: '10px', textAlign: 'center' }}>
+                    <code style={{ color: '#fca5a5', fontSize: '0.8rem' }}>docker kill</code>
+                    <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '4px' }}>강제 종료 (SIGKILL)</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* State Details */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                <div style={{ padding: '20px', background: 'rgba(34,197,94,0.1)', borderRadius: '14px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                  <h4 style={{ color: '#4ade80', marginBottom: '12px' }}>🟢 Running 상태</h4>
+                  <ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                    <li>애플리케이션 실행 중</li>
+                    <li>CPU/메모리 사용</li>
+                    <li>로그 출력 중</li>
+                    <li>네트워크 접근 가능</li>
+                  </ul>
+                </div>
+                <div style={{ padding: '20px', background: 'rgba(245,158,11,0.1)', borderRadius: '14px', border: '1px solid rgba(245,158,11,0.3)' }}>
+                  <h4 style={{ color: '#fbbf24', marginBottom: '12px' }}>🟡 Stopped 상태</h4>
+                  <ul style={{ margin: 0, paddingLeft: '18px', color: '#fef3c7', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                    <li>프로세스 종료됨</li>
+                    <li>파일시스템 유지</li>
+                    <li>재시작 가능</li>
+                    <li>디스크 공간 차지</li>
+                  </ul>
+                </div>
+                <div style={{ padding: '20px', background: 'rgba(239,68,68,0.1)', borderRadius: '14px', border: '1px solid rgba(239,68,68,0.3)' }}>
+                  <h4 style={{ color: '#f87171', marginBottom: '12px' }}>❌ 삭제 후</h4>
+                  <ul style={{ margin: 0, paddingLeft: '18px', color: '#fca5a5', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                    <li>모든 데이터 삭제</li>
+                    <li>복구 불가능</li>
+                    <li>이미지는 남아있음</li>
+                    <li>볼륨 데이터는 유지</li>
+                  </ul>
+                </div>
               </div>
             </div>
           )}
 
+          {/* Section 3: Registry */}
           {conceptSection === 3 && (
             <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#06b6d4' }}>🏪 Docker Registry</h3>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px', marginBottom: '24px' }}>
-                <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(59,130,246,0.2)', borderRadius: '16px' }}><div style={{ fontSize: '2.5rem' }}>💻</div><div style={{ color: '#93c5fd' }}>Local</div></div>
-                <div style={{ textAlign: 'center' }}><code style={{ color: '#86efac' }}>push →</code><br/><code style={{ color: '#93c5fd' }}>← pull</code></div>
-                <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(6,182,212,0.2)', borderRadius: '16px' }}><div style={{ fontSize: '2.5rem' }}>🐳</div><div style={{ color: '#67e8f9' }}>Docker Hub</div></div>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#06b6d4' }}>🏪 Docker Registry & Hub</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>이미지를 저장하고 공유하는 저장소</p>
+
+              {/* Registry Concept */}
+              <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '16px', padding: '24px', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
+                  <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(59,130,246,0.2)', borderRadius: '16px', minWidth: '140px' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: '8px' }}>💻</div>
+                    <div style={{ color: '#93c5fd', fontWeight: '600' }}>Local</div>
+                    <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '4px' }}>내 컴퓨터</div>
+                  </div>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'center' }}>
+                    <div><code style={{ color: '#86efac', fontSize: '0.85rem' }}>docker push</code> <span style={{ color: '#94a3b8' }}>→</span></div>
+                    <div><span style={{ color: '#94a3b8' }}>←</span> <code style={{ color: '#93c5fd', fontSize: '0.85rem' }}>docker pull</code></div>
+                  </div>
+                  
+                  <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(6,182,212,0.2)', borderRadius: '16px', minWidth: '140px' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: '8px' }}>🐳</div>
+                    <div style={{ color: '#67e8f9', fontWeight: '600' }}>Docker Hub</div>
+                    <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '4px' }}>클라우드 저장소</div>
+                  </div>
+                </div>
               </div>
-              <div style={{ padding: '16px', background: 'rgba(251,191,36,0.1)', borderRadius: '12px' }}>
-                <h4 style={{ color: '#fbbf24', marginBottom: '12px', textAlign: 'center' }}>📛 이미지 이름 구조</h4>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', flexWrap: 'wrap' }}>
-                  <code style={{ padding: '8px 12px', background: '#8b5cf6', borderRadius: '6px', color: '#fff' }}>registry</code>
-                  <code style={{ padding: '8px 4px', color: '#94a3b8' }}>/</code>
-                  <code style={{ padding: '8px 12px', background: '#06b6d4', borderRadius: '6px', color: '#fff' }}>user</code>
-                  <code style={{ padding: '8px 4px', color: '#94a3b8' }}>/</code>
-                  <code style={{ padding: '8px 12px', background: '#22c55e', borderRadius: '6px', color: '#fff' }}>image</code>
-                  <code style={{ padding: '8px 4px', color: '#94a3b8' }}>:</code>
-                  <code style={{ padding: '8px 12px', background: '#f59e0b', borderRadius: '6px', color: '#fff' }}>tag</code>
+
+              {/* Image Naming */}
+              <div style={{ background: 'rgba(251,191,36,0.1)', borderRadius: '16px', padding: '20px', marginBottom: '24px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                <h4 style={{ color: '#fbbf24', marginBottom: '16px', textAlign: 'center' }}>📛 이미지 이름 구조</h4>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '16px' }}>
+                  <code style={{ padding: '10px 14px', background: '#8b5cf6', borderRadius: '8px 0 0 8px', color: '#fff', fontSize: '1rem' }}>registry.io</code>
+                  <code style={{ padding: '10px 8px', background: '#64748b', color: '#fff', fontSize: '1rem' }}>/</code>
+                  <code style={{ padding: '10px 14px', background: '#06b6d4', color: '#fff', fontSize: '1rem' }}>username</code>
+                  <code style={{ padding: '10px 8px', background: '#64748b', color: '#fff', fontSize: '1rem' }}>/</code>
+                  <code style={{ padding: '10px 14px', background: '#22c55e', color: '#fff', fontSize: '1rem' }}>image-name</code>
+                  <code style={{ padding: '10px 8px', background: '#64748b', color: '#fff', fontSize: '1rem' }}>:</code>
+                  <code style={{ padding: '10px 14px', background: '#f59e0b', borderRadius: '0 8px 8px 0', color: '#fff', fontSize: '1rem' }}>tag</code>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', fontSize: '0.8rem' }}>
+                  <div style={{ textAlign: 'center' }}><span style={{ color: '#a78bfa' }}>레지스트리</span><br/><span style={{ color: '#94a3b8' }}>생략 시 Docker Hub</span></div>
+                  <div style={{ textAlign: 'center' }}><span style={{ color: '#67e8f9' }}>사용자/조직</span><br/><span style={{ color: '#94a3b8' }}>공식 이미지는 생략</span></div>
+                  <div style={{ textAlign: 'center' }}><span style={{ color: '#86efac' }}>이미지명</span><br/><span style={{ color: '#94a3b8' }}>필수</span></div>
+                  <div style={{ textAlign: 'center' }}><span style={{ color: '#fbbf24' }}>태그</span><br/><span style={{ color: '#94a3b8' }}>생략 시 latest</span></div>
+                </div>
+              </div>
+
+              {/* Examples */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+                <div style={{ padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
+                  <div style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '12px' }}>📦 공식 이미지 예시</div>
+                  {['mysql:8.0', 'redis:alpine', 'nginx:latest', 'openjdk:17-slim'].map((img, i) => (
+                    <code key={i} style={{ display: 'block', padding: '8px 12px', background: 'rgba(34,197,94,0.15)', borderRadius: '6px', color: '#86efac', fontSize: '0.85rem', marginBottom: '6px' }}>{img}</code>
+                  ))}
+                </div>
+                <div style={{ padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
+                  <div style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '12px' }}>🏢 Private Registry 예시</div>
+                  {['gcr.io/my-project/api:v1.2', 'my-registry.com/app:latest', '123456.dkr.ecr.ap-northeast-2.amazonaws.com/myapp:prod'].map((img, i) => (
+                    <code key={i} style={{ display: 'block', padding: '8px 12px', background: 'rgba(139,92,246,0.15)', borderRadius: '6px', color: '#c4b5fd', fontSize: '0.75rem', marginBottom: '6px', wordBreak: 'break-all' }}>{img}</code>
+                  ))}
                 </div>
               </div>
             </div>
           )}
 
+          {/* Section 4: Volumes */}
           {conceptSection === 4 && (
             <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#ec4899' }}>💾 볼륨 (Volumes)</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                <div style={{ padding: '20px', background: 'rgba(34,197,94,0.1)', borderRadius: '14px' }}>
-                  <h4 style={{ color: '#4ade80', marginBottom: '12px' }}>📦 Named Volume</h4>
-                  <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#86efac', fontSize: '0.8rem', marginBottom: '12px' }}>-v db-data:/var/lib/mysql</code>
-                  <ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.85rem' }}><li>Docker가 관리</li><li>운영 환경 권장</li></ul>
+              <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#ec4899' }}>💾 볼륨 (Volumes)</h3>
+              <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>컨테이너 데이터를 영구적으로 저장하는 방법</p>
+
+              {/* Problem */}
+              <div style={{ background: 'rgba(239,68,68,0.1)', borderRadius: '16px', padding: '20px', marginBottom: '24px', border: '1px solid rgba(239,68,68,0.3)' }}>
+                <h4 style={{ color: '#f87171', marginBottom: '12px' }}>😱 볼륨 없이 사용하면?</h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                  <div style={{ padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', flex: 1, minWidth: '200px' }}>
+                    <div style={{ color: '#fca5a5', fontSize: '0.9rem' }}>
+                      1. MySQL 컨테이너 실행 → 데이터 저장<br/>
+                      2. 컨테이너 삭제<br/>
+                      3. <strong>💥 모든 데이터 삭제됨!</strong>
+                    </div>
+                  </div>
+                  <div style={{ color: '#f87171', fontSize: '2rem' }}>→</div>
+                  <div style={{ padding: '16px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '4px' }}>😭</div>
+                    <div style={{ color: '#fca5a5', fontSize: '0.85rem' }}>복구 불가</div>
+                  </div>
                 </div>
-                <div style={{ padding: '20px', background: 'rgba(251,191,36,0.1)', borderRadius: '14px' }}>
-                  <h4 style={{ color: '#fbbf24', marginBottom: '12px' }}>📁 Bind Mount</h4>
-                  <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#fef3c7', fontSize: '0.8rem', marginBottom: '12px' }}>-v ./data:/app/data</code>
-                  <ul style={{ margin: 0, paddingLeft: '18px', color: '#fef3c7', fontSize: '0.85rem' }}><li>호스트 경로 직접 마운트</li><li>개발 환경 유용</li></ul>
+              </div>
+
+              {/* Volume Types */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '24px' }}>
+                {/* Named Volume */}
+                <div style={{ background: 'rgba(34,197,94,0.1)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                  <h4 style={{ color: '#4ade80', marginBottom: '16px' }}>📦 Named Volume (권장)</h4>
+                  <code style={{ display: 'block', padding: '12px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#86efac', fontSize: '0.8rem', marginBottom: '12px' }}>docker run -v <span style={{ color: '#fbbf24' }}>db-data</span>:/var/lib/mysql mysql</code>
+                  <ul style={{ margin: 0, paddingLeft: '18px', color: '#bbf7d0', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                    <li>Docker가 관리하는 볼륨</li>
+                    <li>이름으로 쉽게 참조</li>
+                    <li>백업/복원 용이</li>
+                    <li><strong>운영 환경에 적합</strong></li>
+                  </ul>
+                </div>
+
+                {/* Bind Mount */}
+                <div style={{ background: 'rgba(251,191,36,0.1)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(251,191,36,0.3)' }}>
+                  <h4 style={{ color: '#fbbf24', marginBottom: '16px' }}>📁 Bind Mount</h4>
+                  <code style={{ display: 'block', padding: '12px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#fef3c7', fontSize: '0.8rem', marginBottom: '12px' }}>docker run -v <span style={{ color: '#86efac' }}>/home/user/data</span>:/app/data myapp</code>
+                  <ul style={{ margin: 0, paddingLeft: '18px', color: '#fef3c7', fontSize: '0.85rem', lineHeight: '1.8' }}>
+                    <li>호스트 경로 직접 마운트</li>
+                    <li>실시간 코드 반영 가능</li>
+                    <li>호스트 환경에 의존적</li>
+                    <li><strong>개발 환경에 적합</strong></li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Visual Comparison */}
+              <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '16px', padding: '20px' }}>
+                <h4 style={{ color: '#e2e8f0', marginBottom: '16px', textAlign: 'center' }}>💡 볼륨 사용 시 데이터 흐름</h4>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                  <div style={{ textAlign: 'center', padding: '16px', background: 'rgba(34,197,94,0.2)', borderRadius: '12px' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '4px' }}>🐳</div>
+                    <div style={{ color: '#86efac', fontSize: '0.85rem' }}>컨테이너</div>
+                    <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>/var/lib/mysql</div>
+                  </div>
+                  <div style={{ fontSize: '1.5rem', color: '#94a3b8' }}>↔️</div>
+                  <div style={{ textAlign: 'center', padding: '16px', background: 'rgba(139,92,246,0.2)', borderRadius: '12px' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '4px' }}>💾</div>
+                    <div style={{ color: '#c4b5fd', fontSize: '0.85rem' }}>볼륨</div>
+                    <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>db-data</div>
+                  </div>
+                  <div style={{ fontSize: '1.5rem', color: '#94a3b8' }}>→</div>
+                  <div style={{ textAlign: 'center', padding: '16px', background: 'rgba(236,72,153,0.2)', borderRadius: '12px' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '4px' }}>✅</div>
+                    <div style={{ color: '#f9a8d4', fontSize: '0.85rem' }}>컨테이너 삭제 후</div>
+                    <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>데이터 유지!</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -571,55 +843,155 @@ Deleted: sha256:abc123def456...`,
       {/* ============ VM VS DOCKER TAB ============ */}
       {activeTab === 'vmvsdocker' && (
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          {/* Analogy Section */}
           <div style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.1), rgba(251,191,36,0.02))', borderRadius: '20px', padding: '28px', marginBottom: '20px', border: '1px solid rgba(251,191,36,0.3)' }}>
-            <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#fbbf24' }}>🏠 쉬운 비유: 단독주택 vs 아파트</h3>
+            <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#fbbf24' }}>🏠 쉬운 비유: 단독주택 vs 아파트</h3>
+            <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '24px', fontSize: '0.9rem' }}>VM과 Docker의 차이를 집으로 비유해볼게요!</p>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              {/* VM */}
               <div style={{ background: 'linear-gradient(180deg, rgba(244,114,182,0.15), rgba(244,114,182,0.02))', borderRadius: '16px', padding: '24px', border: '2px solid rgba(244,114,182,0.4)' }}>
-                <div style={{ textAlign: 'center', marginBottom: '16px' }}><div style={{ fontSize: '3rem' }}>🏠</div><h4 style={{ color: '#f472b6' }}>VM = 단독주택</h4></div>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <div style={{ fontSize: '4rem', marginBottom: '8px' }}>🏠</div>
+                  <h4 style={{ color: '#f472b6', fontSize: '1.2rem' }}>VM = 단독주택</h4>
+                </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {[{ label: '🏃 내 애플리케이션', bg: '#be185d' }, { label: '📚 내 전용 라이브러리', bg: '#9d174d' }, { label: '💿 내 전용 OS (Ubuntu/Windows)', bg: '#831843', bold: true }, { label: '🔌 내 전용 전기/수도/가스', bg: '#500724' }, { label: '🏗️ 내 땅, 내 기초공사', bg: '#3f0520' }].map((item, i) => (
+                      <div key={i} style={{ padding: item.bold ? '12px' : '10px', background: item.bg, borderRadius: '8px', textAlign: 'center', fontSize: item.bold ? '0.85rem' : '0.8rem', fontWeight: item.bold ? '600' : '400' }}>{item.label}</div>
+                    ))}
+                  </div>
+                </div>
                 <div style={{ color: '#fda4af', fontSize: '0.85rem', lineHeight: '1.7' }}>
-                  <div style={{ marginBottom: '8px' }}><strong>🏗️ 짓는 데 오래 걸림</strong> - OS 전체 설치</div>
-                  <div style={{ marginBottom: '8px' }}><strong>💰 유지비 비쌈</strong> - 리소스 많이 사용</div>
-                  <div><strong>📦 공간 낭비</strong> - GB 단위 용량</div>
+                  <div style={{ marginBottom: '8px' }}><strong>🏗️ 짓는 데 오래 걸림</strong><br/>땅부터 시작 → 기초공사 → 건물 → 입주</div>
+                  <div style={{ marginBottom: '8px' }}><strong>💰 유지비가 비쌈</strong><br/>전기/수도/가스 다 개별 납부</div>
+                  <div><strong>📦 공간 낭비</strong><br/>혼자 살아도 큰 집 전체 관리 필요</div>
                 </div>
               </div>
+
+              {/* Docker */}
               <div style={{ background: 'linear-gradient(180deg, rgba(34,211,238,0.15), rgba(34,211,238,0.02))', borderRadius: '16px', padding: '24px', border: '2px solid rgba(34,211,238,0.4)' }}>
-                <div style={{ textAlign: 'center', marginBottom: '16px' }}><div style={{ fontSize: '3rem' }}>🏢</div><h4 style={{ color: '#22d3ee' }}>Docker = 아파트</h4></div>
-                <div style={{ color: '#67e8f9', fontSize: '0.85rem', lineHeight: '1.7' }}>
-                  <div style={{ marginBottom: '8px' }}><strong>⚡ 입주 빠름</strong> - OS 커널 공유</div>
-                  <div style={{ marginBottom: '8px' }}><strong>💰 관리비 저렴</strong> - 리소스 효율적</div>
-                  <div><strong>📦 공간 효율</strong> - MB 단위 용량</div>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <div style={{ fontSize: '4rem', marginBottom: '8px' }}>🏢</div>
+                  <h4 style={{ color: '#22d3ee', fontSize: '1.2rem' }}>Docker = 아파트</h4>
                 </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      {['App1', 'App2', 'App3'].map((app, i) => (
+                        <div key={i} style={{ flex: 1, padding: '10px', background: ['#0891b2', '#0e7490', '#155e75'][i], borderRadius: '8px', textAlign: 'center', fontSize: '0.75rem' }}>🏃 {app}</div>
+                      ))}
+                    </div>
+                    <div style={{ padding: '12px', background: '#0284c7', borderRadius: '8px', textAlign: 'center', fontSize: '0.85rem' }}>🐳 Docker Engine (건물 관리인)</div>
+                    <div style={{ padding: '12px', background: '#0369a1', borderRadius: '8px', textAlign: 'center', fontSize: '0.85rem', fontWeight: '600', border: '2px dashed #7dd3fc' }}>💿 공용 OS 커널 (건물 기초)</div>
+                    <div style={{ padding: '10px', background: '#075985', borderRadius: '8px', textAlign: 'center', fontSize: '0.8rem' }}>🔌 공용 전기/수도/가스</div>
+                  </div>
+                </div>
+                <div style={{ color: '#67e8f9', fontSize: '0.85rem', lineHeight: '1.7' }}>
+                  <div style={{ marginBottom: '8px' }}><strong>⚡ 입주가 빠름</strong><br/>건물은 이미 있음 → 방만 배정받으면 끝!</div>
+                  <div style={{ marginBottom: '8px' }}><strong>💰 관리비 저렴</strong><br/>공용시설 함께 사용 → 비용 분담</div>
+                  <div><strong>📦 공간 효율적</strong><br/>필요한 만큼만 사용</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Key Difference */}
+            <div style={{ marginTop: '24px', padding: '20px', background: 'rgba(0,0,0,0.2)', borderRadius: '14px', textAlign: 'center' }}>
+              <div style={{ fontSize: '1.3rem', marginBottom: '12px' }}>💡 핵심 차이점</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '16px', alignItems: 'center' }}>
+                <div style={{ padding: '14px', background: 'rgba(244,114,182,0.2)', borderRadius: '10px' }}>
+                  <div style={{ color: '#f472b6', fontWeight: '600' }}>VM (단독주택)</div>
+                  <div style={{ color: '#fda4af', fontSize: '0.85rem', marginTop: '4px' }}>집마다 <strong>OS 전체</strong>를 따로 설치</div>
+                </div>
+                <div style={{ fontSize: '1.5rem' }}>⚔️</div>
+                <div style={{ padding: '14px', background: 'rgba(34,211,238,0.2)', borderRadius: '10px' }}>
+                  <div style={{ color: '#22d3ee', fontWeight: '600' }}>Docker (아파트)</div>
+                  <div style={{ color: '#67e8f9', fontSize: '0.85rem', marginTop: '4px' }}><strong>OS 커널을 공유</strong>하고 방만 분리</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Kitchen Analogy */}
+            <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(139,92,246,0.1)', borderRadius: '12px', border: '1px solid rgba(139,92,246,0.3)' }}>
+              <div style={{ color: '#c4b5fd', fontSize: '0.9rem', marginBottom: '8px' }}>🍳 다른 비유: 요리하기</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ color: '#fda4af', fontSize: '0.85rem' }}><strong style={{ color: '#f472b6' }}>VM</strong> = 요리할 때마다 <strong>주방 전체를 새로 짓는 것</strong><br/><span style={{ color: '#94a3b8' }}>싱크대, 가스레인지, 냉장고 전부 새로!</span></div>
+                <div style={{ color: '#67e8f9', fontSize: '0.85rem' }}><strong style={{ color: '#22d3ee' }}>Docker</strong> = <strong>공유 주방에서 내 재료만 가져와 요리</strong><br/><span style={{ color: '#94a3b8' }}>주방 시설은 공유, 레시피(이미지)만 내 것!</span></div>
               </div>
             </div>
           </div>
 
+          {/* Performance Simulation */}
           <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '28px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>⚡ 성능 비교 시뮬레이션</h3>
+            <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#f472b6' }}>⚡ VM vs Docker 성능 비교</h3>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <button onClick={runVmSimulation} disabled={vmSimulation.running} style={{ padding: '16px 40px', borderRadius: '14px', border: 'none', background: vmSimulation.running ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #f472b6, #8b5cf6)', color: vmSimulation.running ? '#666' : '#fff', cursor: vmSimulation.running ? 'not-allowed' : 'pointer', fontSize: '1.1rem', fontWeight: '700' }}>
-                {vmSimulation.running ? `⏳ ${(vmSimulation.elapsed / 1000).toFixed(1)}초` : '🚀 시작!'}
+                {vmSimulation.running ? `⏳ 실행 중... ${(vmSimulation.elapsed / 1000).toFixed(1)}초` : '🚀 시뮬레이션 시작!'}
               </button>
             </div>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              <div style={{ background: 'rgba(244,114,182,0.1)', borderRadius: '16px', padding: '20px' }}>
-                <h4 style={{ color: '#f472b6', marginBottom: '16px' }}>🏠 VM × 3 <span style={{ float: 'right' }}>{vmSimulation.vms.filter(v => v.progress >= 100).length}/3</span></h4>
-                {vmSimulation.vms.map(vm => (
-                  <div key={vm.id} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '10px', marginBottom: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}><span style={{ color: '#fda4af' }}>VM-{vm.id + 1}</span><span style={{ color: '#fda4af', fontSize: '0.8rem' }}>{vm.stage}</span></div>
-                    <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px' }}><div style={{ height: '100%', width: `${vm.progress}%`, background: vm.progress >= 100 ? '#22c55e' : '#f472b6', borderRadius: '3px' }} /></div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ background: 'rgba(34,211,238,0.1)', borderRadius: '16px', padding: '20px' }}>
-                <h4 style={{ color: '#22d3ee', marginBottom: '16px' }}>🐳 Docker × 6 <span style={{ float: 'right' }}>{vmSimulation.containers.filter(c => c.progress >= 100).length}/6</span></h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                  {vmSimulation.containers.map(c => (
-                    <div key={c.id} style={{ background: c.progress >= 100 ? 'rgba(34,197,94,0.3)' : 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                      <div style={{ fontSize: '1.2rem' }}>{c.progress >= 100 ? '🟢' : '🔵'}</div>
+              <div style={{ background: 'linear-gradient(180deg, rgba(244,114,182,0.1), transparent)', borderRadius: '16px', padding: '20px', border: '2px solid rgba(244,114,182,0.4)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h4 style={{ color: '#f472b6' }}>🏠 VM × 3</h4>
+                  <span style={{ background: '#f472b6', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem' }}>{vmSimulation.vms.filter(v => v.progress >= 100).length} / 3</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minHeight: '180px' }}>
+                  {vmSimulation.vms.map(vm => (
+                    <div key={vm.id} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '10px', padding: '12px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span style={{ color: '#fda4af' }}>VM-{vm.id + 1}</span>
+                        <span style={{ color: vm.progress >= 100 ? '#86efac' : '#fda4af', fontSize: '0.8rem' }}>{vm.stage}</span>
+                      </div>
+                      <div style={{ height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${vm.progress}%`, background: vm.progress >= 100 ? '#22c55e' : '#f472b6', transition: 'width 0.3s' }} />
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
+              <div style={{ background: 'linear-gradient(180deg, rgba(34,211,238,0.1), transparent)', borderRadius: '16px', padding: '20px', border: '2px solid rgba(34,211,238,0.4)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h4 style={{ color: '#22d3ee' }}>🐳 Docker × 6</h4>
+                  <span style={{ background: '#22d3ee', color: '#0f172a', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem' }}>{vmSimulation.containers.filter(c => c.progress >= 100).length} / 6</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', minHeight: '180px' }}>
+                  {vmSimulation.containers.map(c => (
+                    <div key={c.id} style={{ background: c.progress >= 100 ? 'rgba(34,197,94,0.3)' : 'rgba(0,0,0,0.3)', borderRadius: '10px', padding: '12px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '1.5rem' }}>{c.progress >= 100 ? '🟢' : '🔵'}</div>
+                      <div style={{ color: '#67e8f9', fontSize: '0.75rem' }}>C-{c.id + 1}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Cost Table */}
+            <div style={{ marginTop: '24px', padding: '20px', background: 'rgba(251,191,36,0.1)', borderRadius: '16px', border: '1px solid rgba(251,191,36,0.3)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h4 style={{ color: '#fbbf24' }}>💰 비용 분석</h4>
+                <button onClick={() => setShowCostDetail(!showCostDetail)} style={{ padding: '8px 16px', borderRadius: '8px', border: 'none', background: 'rgba(251,191,36,0.3)', color: '#fef3c7', cursor: 'pointer' }}>{showCostDetail ? '접기' : '상세 보기'}</button>
+              </div>
+              {showCostDetail && (
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead><tr>
+                    <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8' }}>항목</th>
+                    <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#f472b6' }}>VM</th>
+                    <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#22d3ee' }}>Docker</th>
+                    <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#22c55e' }}>절감</th>
+                  </tr></thead>
+                  <tbody>
+                    {[{ item: '시작 시간', vm: '30-60초', docker: '1-3초', save: '~95%' }, { item: '메모리', vm: '2-4GB', docker: '200-500MB', save: '~85%' }, { item: '디스크', vm: '20-50GB', docker: '100-500MB', save: '~95%' }, { item: 'OS 라이선스', vm: '필요', docker: '불필요', save: '100%' }].map((row, i) => (
+                      <tr key={i}>
+                        <td style={{ padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#e2e8f0' }}>{row.item}</td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', color: '#fda4af' }}>{row.vm}</td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', color: '#67e8f9' }}>{row.docker}</td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', color: '#86efac', fontWeight: '600' }}>{row.save}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
@@ -636,18 +1008,19 @@ Deleted: sha256:abc123def456...`,
               ))}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              <div style={{ background: '#0d1117', borderRadius: '16px', padding: '20px', fontFamily: 'monospace' }}>
+              <div style={{ background: '#0d1117', borderRadius: '16px', padding: '20px', fontFamily: '"JetBrains Mono", monospace' }}>
+                <div style={{ color: '#8b949e', fontSize: '0.8rem', marginBottom: '16px' }}>📄 Dockerfile</div>
                 {imageLayersDetail.map((layer, i) => (
-                  <div key={i} onClick={() => setDockerfileStep(i)} style={{ padding: '10px', borderRadius: '6px', background: i === dockerfileStep ? 'rgba(167,139,250,0.2)' : 'transparent', borderLeft: i === dockerfileStep ? '3px solid #a78bfa' : '3px solid transparent', marginBottom: '4px', cursor: 'pointer' }}>
+                  <div key={i} onClick={() => setDockerfileStep(i)} style={{ padding: '10px 12px', borderRadius: '6px', background: i === dockerfileStep ? 'rgba(167,139,250,0.2)' : 'transparent', borderLeft: i === dockerfileStep ? '3px solid #a78bfa' : '3px solid transparent', marginBottom: '4px', cursor: 'pointer' }}>
                     <span style={{ color: '#ff7b72' }}>{layer.instruction.split(' ')[0]}</span>
                     <span style={{ color: '#c9d1d9' }}> {layer.instruction.split(' ').slice(1).join(' ')}</span>
                   </div>
                 ))}
               </div>
-              <div style={{ background: 'rgba(167,139,250,0.1)', borderRadius: '16px', padding: '20px' }}>
-                <h4 style={{ color: '#c4b5fd', marginBottom: '12px' }}>{imageLayersDetail[dockerfileStep].name}</h4>
-                <div style={{ padding: '12px', background: 'rgba(251,191,36,0.1)', borderRadius: '10px', marginBottom: '12px' }}><span style={{ color: '#fbbf24' }}>{imageLayersDetail[dockerfileStep].analogy}</span></div>
-                <p style={{ color: '#e2e8f0', fontSize: '0.9rem', marginBottom: '16px' }}>{imageLayersDetail[dockerfileStep].description}</p>
+              <div style={{ background: 'rgba(167,139,250,0.1)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(167,139,250,0.3)' }}>
+                <h4 style={{ color: '#c4b5fd', marginBottom: '16px' }}>{imageLayersDetail[dockerfileStep].name}</h4>
+                <div style={{ padding: '12px', background: 'rgba(251,191,36,0.1)', borderRadius: '10px', marginBottom: '16px', border: '1px solid rgba(251,191,36,0.3)' }}><span style={{ color: '#fbbf24' }}>{imageLayersDetail[dockerfileStep].analogy}</span></div>
+                <p style={{ color: '#e2e8f0', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '16px' }}>{imageLayersDetail[dockerfileStep].description}</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div style={{ padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', textAlign: 'center' }}><div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>크기</div><div style={{ color: '#fff', fontWeight: '600' }}>{imageLayersDetail[dockerfileStep].size}</div></div>
                   <div style={{ padding: '12px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', textAlign: 'center' }}><div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>캐시</div><div style={{ color: imageLayersDetail[dockerfileStep].cached ? '#86efac' : '#fbbf24', fontWeight: '600' }}>{imageLayersDetail[dockerfileStep].cached ? '캐시됨' : '매번 실행'}</div></div>
@@ -945,7 +1318,7 @@ volumes:
                   </div>
                   <div style={{ padding: '20px', background: 'rgba(251,191,36,0.1)', borderRadius: '14px' }}>
                     <h4 style={{ color: '#fbbf24', marginBottom: '12px' }}>📁 Bind Mount</h4>
-                    <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#fef3c7', fontSize: '0.8rem' }}>./data:/app/data</code>
+                    <code style={{ display: 'block', padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: '#fef3c7', fontSize: '0.8rem', marginBottom: '12px' }}>-v ./data:/app/data</code>
                     <p style={{ color: '#fef3c7', fontSize: '0.8rem', marginTop: '8px' }}>개발 환경 유용</p>
                   </div>
                 </div>
