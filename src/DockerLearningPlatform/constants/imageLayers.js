@@ -625,6 +625,444 @@ export const TROUBLESHOOTING_DATA = {
   ]
 };
 
+// 보안 베스트 프랙티스 데이터
+export const SECURITY_BEST_PRACTICES_DATA = {
+  title: '보안 베스트 프랙티스',
+  subtitle: '안전한 Docker 이미지와 컨테이너 운영을 위한 필수 가이드',
+  categories: [
+    {
+      id: 'non-root',
+      icon: '👤',
+      title: '비root 유저 실행',
+      color: '#ef4444',
+      importance: '높음',
+      problem: 'root로 실행 시 컨테이너 탈출 공격에 취약',
+      solution: {
+        description: '전용 사용자 생성 후 USER 명령어로 전환',
+        dockerfile: `# 사용자 및 그룹 생성
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# 애플리케이션 파일 소유권 변경
+COPY --chown=appuser:appgroup . /app
+
+# 비root 유저로 전환
+USER appuser
+
+# 이후 명령어는 appuser 권한으로 실행
+CMD ["node", "app.js"]`
+      },
+      tips: [
+        'alpine 이미지: addgroup -S, adduser -S 사용',
+        'debian/ubuntu: groupadd, useradd 사용',
+        '파일 복사 시 --chown 플래그 활용'
+      ]
+    },
+    {
+      id: 'minimal-base',
+      icon: '📦',
+      title: '최소 베이스 이미지 사용',
+      color: '#f59e0b',
+      importance: '높음',
+      problem: '큰 이미지 = 더 많은 취약점 가능성',
+      solution: {
+        description: '필요한 것만 포함된 경량 이미지 선택',
+        examples: [
+          { bad: 'ubuntu:latest (77MB)', good: 'ubuntu:22.04 (특정 버전)' },
+          { bad: 'node:18 (1GB)', good: 'node:18-alpine (170MB)' },
+          { bad: 'python:3.11 (1GB)', good: 'python:3.11-slim (150MB)' },
+          { bad: 'openjdk:17 (400MB)', good: 'eclipse-temurin:17-jre-alpine (150MB)' }
+        ]
+      },
+      hierarchy: [
+        { name: 'scratch', size: '0MB', desc: '완전히 빈 이미지 (Go, Rust)' },
+        { name: 'alpine', size: '5MB', desc: '최소 리눅스 배포판' },
+        { name: 'slim', size: '~100MB', desc: '필수 패키지만 포함' },
+        { name: 'full', size: '~1GB', desc: '모든 도구 포함 (개발용)' }
+      ]
+    },
+    {
+      id: 'secrets',
+      icon: '🔐',
+      title: '시크릿 관리',
+      color: '#8b5cf6',
+      importance: '매우 높음',
+      problem: '이미지에 비밀번호/API 키가 포함되면 유출 위험',
+      badPractices: [
+        { code: 'ENV DB_PASSWORD=secret123', reason: 'docker inspect로 확인 가능' },
+        { code: 'COPY .env /app/', reason: '이미지에 시크릿 포함됨' },
+        { code: 'RUN echo $API_KEY > /app/key', reason: '레이어에 기록됨' }
+      ],
+      goodPractices: [
+        {
+          title: '런타임에 환경변수 주입',
+          code: 'docker run -e DB_PASSWORD=$SECRET myapp',
+          desc: '실행 시점에 외부에서 주입'
+        },
+        {
+          title: 'Docker Secrets (Swarm/Compose)',
+          code: `secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+services:
+  app:
+    secrets:
+      - db_password`,
+          desc: '파일로 마운트되어 메모리에만 존재'
+        },
+        {
+          title: '외부 시크릿 매니저',
+          options: ['AWS Secrets Manager', 'HashiCorp Vault', 'Azure Key Vault'],
+          desc: '프로덕션 환경 권장'
+        }
+      ]
+    },
+    {
+      id: 'scan',
+      icon: '🔍',
+      title: '이미지 취약점 스캔',
+      color: '#06b6d4',
+      importance: '높음',
+      problem: '베이스 이미지나 패키지에 알려진 취약점 존재 가능',
+      tools: [
+        { name: 'docker scout', desc: 'Docker 공식 스캔 도구', cmd: 'docker scout cves 이미지명' },
+        { name: 'trivy', desc: '오픈소스 스캐너', cmd: 'trivy image 이미지명' },
+        { name: 'snyk', desc: '상용 보안 플랫폼', cmd: 'snyk container test 이미지명' }
+      ],
+      workflow: [
+        'CI/CD에서 빌드 후 자동 스캔',
+        '심각도 높은 취약점 발견 시 빌드 실패',
+        '정기적으로 베이스 이미지 업데이트'
+      ]
+    },
+    {
+      id: 'readonly',
+      icon: '📝',
+      title: '읽기 전용 파일시스템',
+      color: '#22c55e',
+      importance: '중간',
+      problem: '악성 코드가 파일시스템을 변경할 수 있음',
+      solution: {
+        description: '컨테이너 파일시스템을 읽기 전용으로 실행',
+        code: 'docker run --read-only myapp',
+        compose: `services:
+  app:
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run`
+      },
+      note: '쓰기가 필요한 경로는 tmpfs나 볼륨으로 마운트'
+    }
+  ],
+  checklist: [
+    { item: '비root 유저로 실행', priority: '필수' },
+    { item: '최소 베이스 이미지 사용', priority: '필수' },
+    { item: '시크릿을 이미지에 포함하지 않음', priority: '필수' },
+    { item: '정기적인 취약점 스캔', priority: '권장' },
+    { item: '특정 버전 태그 사용 (latest 지양)', priority: '권장' },
+    { item: '불필요한 패키지 설치 안 함', priority: '권장' },
+    { item: '읽기 전용 파일시스템 고려', priority: '선택' }
+  ]
+};
+
+// 이미지 최적화 팁 데이터
+export const IMAGE_OPTIMIZATION_DATA = {
+  title: '이미지 최적화 팁',
+  subtitle: '더 작고, 더 빠르고, 더 효율적인 Docker 이미지 만들기',
+  strategies: [
+    {
+      id: 'layer-order',
+      icon: '📚',
+      title: '레이어 순서 최적화',
+      color: '#3b82f6',
+      principle: '자주 변경되는 것은 나중에, 덜 변경되는 것은 먼저',
+      reason: 'Docker는 변경된 레이어부터 다시 빌드 → 캐시 효율 극대화',
+      bad: {
+        title: '나쁜 예',
+        dockerfile: `COPY . /app              # 코드 변경 시 매번
+RUN npm install           # 의존성 다시 설치 😢`,
+        problem: '코드만 바꿔도 npm install 다시 실행'
+      },
+      good: {
+        title: '좋은 예',
+        dockerfile: `COPY package*.json /app/  # 의존성 정의만 먼저
+RUN npm install           # 의존성 캐시됨 ✅
+COPY . /app               # 코드는 마지막에`,
+        benefit: 'package.json 안 바뀌면 npm install 스킵!'
+      }
+    },
+    {
+      id: 'combine-run',
+      icon: '🔗',
+      title: 'RUN 명령어 합치기',
+      color: '#8b5cf6',
+      principle: '여러 RUN을 하나로 합쳐서 레이어 수 줄이기',
+      bad: {
+        title: '나쁜 예 (3개 레이어)',
+        dockerfile: `RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get clean`
+      },
+      good: {
+        title: '좋은 예 (1개 레이어)',
+        dockerfile: `RUN apt-get update && \\
+    apt-get install -y curl && \\
+    apt-get clean && \\
+    rm -rf /var/lib/apt/lists/*`
+      },
+      tips: [
+        '&& 로 명령어 연결',
+        '마지막에 캐시/임시 파일 삭제',
+        '\\로 줄바꿈하여 가독성 유지'
+      ]
+    },
+    {
+      id: 'apt-clean',
+      icon: '🧹',
+      title: '패키지 매니저 캐시 정리',
+      color: '#ef4444',
+      principle: '설치 후 캐시를 같은 RUN에서 삭제',
+      examples: {
+        apt: {
+          title: 'apt (Debian/Ubuntu)',
+          code: `RUN apt-get update && \\
+    apt-get install -y --no-install-recommends curl && \\
+    rm -rf /var/lib/apt/lists/*`
+        },
+        apk: {
+          title: 'apk (Alpine)',
+          code: `RUN apk add --no-cache curl`
+        },
+        yum: {
+          title: 'yum (CentOS/RHEL)',
+          code: `RUN yum install -y curl && \\
+    yum clean all`
+        },
+        pip: {
+          title: 'pip (Python)',
+          code: `RUN pip install --no-cache-dir -r requirements.txt`
+        },
+        npm: {
+          title: 'npm (Node.js)',
+          code: `RUN npm ci --only=production && \\
+    npm cache clean --force`
+        }
+      }
+    },
+    {
+      id: 'multi-stage',
+      icon: '🏗️',
+      title: '멀티스테이지 빌드',
+      color: '#22c55e',
+      principle: '빌드 도구는 빌드 스테이지에만, 실행 이미지는 경량으로',
+      comparison: [
+        { type: 'Single Stage', size: '~800MB', includes: 'JDK + Maven + 소스 + JAR' },
+        { type: 'Multi Stage', size: '~150MB', includes: 'JRE + JAR만' }
+      ],
+      note: '자세한 내용은 "멀티스테이지" 탭 참고'
+    },
+    {
+      id: 'specific-copy',
+      icon: '📋',
+      title: '필요한 파일만 COPY',
+      color: '#f59e0b',
+      principle: 'COPY . 대신 필요한 파일/폴더만 명시',
+      bad: {
+        dockerfile: 'COPY . /app',
+        problem: '불필요한 파일까지 모두 복사'
+      },
+      good: {
+        dockerfile: `COPY package*.json /app/
+COPY src/ /app/src/
+COPY public/ /app/public/`,
+        benefit: '필요한 것만 복사, .dockerignore 보완'
+      }
+    },
+    {
+      id: 'build-args',
+      icon: '⚙️',
+      title: '빌드 인자로 최적화',
+      color: '#06b6d4',
+      examples: [
+        {
+          lang: 'Node.js',
+          arg: 'NODE_ENV=production',
+          effect: 'devDependencies 설치 안 함'
+        },
+        {
+          lang: 'Python',
+          arg: 'PYTHONDONTWRITEBYTECODE=1',
+          effect: '.pyc 파일 생성 안 함'
+        },
+        {
+          lang: 'Go',
+          arg: 'CGO_ENABLED=0',
+          effect: 'C 의존성 제거, scratch 사용 가능'
+        }
+      ]
+    }
+  ],
+  sizeComparison: {
+    title: '최적화 효과 비교',
+    examples: [
+      { app: 'Node.js 앱', before: '1.2GB', after: '150MB', reduction: '88%' },
+      { app: 'Spring Boot', before: '750MB', after: '180MB', reduction: '76%' },
+      { app: 'Go 서비스', before: '800MB', after: '15MB', reduction: '98%' },
+      { app: 'Python API', before: '1.1GB', after: '200MB', reduction: '82%' }
+    ]
+  },
+  commands: {
+    title: '이미지 크기 확인 명령어',
+    items: [
+      { cmd: 'docker images', desc: '이미지 목록과 크기' },
+      { cmd: 'docker history 이미지명', desc: '레이어별 크기 확인' },
+      { cmd: 'docker system df', desc: '전체 디스크 사용량' },
+      { cmd: 'dive 이미지명', desc: '레이어 상세 분석 (외부 도구)' }
+    ]
+  }
+};
+
+// CI/CD 연동 개념 데이터
+export const CICD_INTEGRATION_DATA = {
+  title: 'CI/CD 연동 개념',
+  subtitle: 'Docker와 자동화 파이프라인의 통합',
+  overview: {
+    title: 'CI/CD란?',
+    ci: {
+      name: 'CI (Continuous Integration)',
+      icon: '🔄',
+      desc: '코드 변경 시 자동으로 빌드/테스트',
+      steps: ['코드 푸시', '자동 빌드', '테스트 실행', '결과 리포트']
+    },
+    cd: {
+      name: 'CD (Continuous Deployment)',
+      icon: '🚀',
+      desc: '테스트 통과 후 자동으로 배포',
+      steps: ['이미지 빌드', '레지스트리 푸시', '서버 배포', '헬스체크']
+    }
+  },
+  workflow: {
+    title: 'Docker CI/CD 워크플로우',
+    steps: [
+      { step: 1, name: 'Code Push', icon: '📝', desc: 'GitHub/GitLab에 코드 푸시', color: '#3b82f6' },
+      { step: 2, name: 'CI Trigger', icon: '⚡', desc: 'CI 파이프라인 자동 시작', color: '#8b5cf6' },
+      { step: 3, name: 'Build Image', icon: '🔨', desc: 'docker build로 이미지 생성', color: '#f59e0b' },
+      { step: 4, name: 'Run Tests', icon: '🧪', desc: '컨테이너에서 테스트 실행', color: '#06b6d4' },
+      { step: 5, name: 'Scan Image', icon: '🔍', desc: '보안 취약점 스캔', color: '#ef4444' },
+      { step: 6, name: 'Push Registry', icon: '📦', desc: 'Docker Hub/ECR 등에 푸시', color: '#22c55e' },
+      { step: 7, name: 'Deploy', icon: '🚀', desc: '프로덕션 서버에 배포', color: '#ec4899' }
+    ]
+  },
+  platforms: {
+    title: '주요 CI/CD 플랫폼',
+    items: [
+      {
+        name: 'GitHub Actions',
+        icon: '🐙',
+        desc: 'GitHub 통합, 무료 티어 제공',
+        example: `name: Docker Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Image
+        run: docker build -t myapp .
+      - name: Push to Registry
+        run: |
+          docker login -u \${{ secrets.DOCKER_USER }} -p \${{ secrets.DOCKER_PASS }}
+          docker push myapp`
+      },
+      {
+        name: 'GitLab CI',
+        icon: '🦊',
+        desc: 'GitLab 내장, Docker 지원 우수',
+        example: `stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t myapp .
+    - docker push myapp`
+      },
+      {
+        name: 'Jenkins',
+        icon: '🎩',
+        desc: '자체 호스팅, 높은 커스터마이징',
+        example: `pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        sh 'docker build -t myapp .'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sh 'docker push myapp'
+      }
+    }
+  }
+}`
+      }
+    ]
+  },
+  tagging: {
+    title: '이미지 태깅 전략',
+    strategies: [
+      {
+        name: 'Git Commit SHA',
+        example: 'myapp:abc1234',
+        pros: '정확한 버전 추적',
+        cons: '사람이 읽기 어려움'
+      },
+      {
+        name: 'Semantic Version',
+        example: 'myapp:1.2.3',
+        pros: '의미 있는 버전 관리',
+        cons: '수동 버전 관리 필요'
+      },
+      {
+        name: 'Branch + SHA',
+        example: 'myapp:main-abc1234',
+        pros: '브랜치별 구분 가능',
+        cons: '태그가 길어짐'
+      },
+      {
+        name: 'Date + Build Number',
+        example: 'myapp:20240115-42',
+        pros: '시간순 정렬 가능',
+        cons: '코드와 직접 연결 어려움'
+      }
+    ],
+    bestPractice: 'latest는 개발용으로만, 프로덕션은 항상 특정 버전 태그 사용'
+  },
+  registries: {
+    title: '컨테이너 레지스트리',
+    items: [
+      { name: 'Docker Hub', type: '퍼블릭', free: '1개 private repo', icon: '🐳' },
+      { name: 'GitHub Container Registry', type: '퍼블릭/프라이빗', free: 'GitHub 연동', icon: '🐙' },
+      { name: 'AWS ECR', type: '프라이빗', free: '500MB/월', icon: '☁️' },
+      { name: 'Google GCR', type: '프라이빗', free: 'GCP 연동', icon: '🌐' },
+      { name: 'Azure ACR', type: '프라이빗', free: 'Azure 연동', icon: '📘' }
+    ]
+  },
+  bestPractices: [
+    'main 브랜치 푸시 시에만 프로덕션 배포',
+    'PR마다 테스트 이미지 빌드하여 검증',
+    '시크릿은 CI/CD 플랫폼의 시크릿 기능 사용',
+    '이미지 스캔을 파이프라인에 포함',
+    '빌드 캐시 활용하여 빌드 시간 단축',
+    'health check 포함하여 배포 검증'
+  ]
+};
+
 /**
  * Get instruction keyword from full instruction string
  * Used for tab button display
