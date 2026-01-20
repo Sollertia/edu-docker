@@ -43,7 +43,7 @@ export const COMMAND_CATEGORIES = [
     name: '🏃 컨테이너 실행',
     commands: [
       { cmd: 'docker run -d --name myapp -p 8080:8080 myapp:1.0', short: '백그라운드 실행', desc: '-d: 백그라운드, --name: 컨테이너 이름, -p: 포트매핑', output: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6' },
-      { cmd: 'docker run -it --rm alpine /bin/sh', short: '대화형 일회용', desc: '-it: 대화형 터미널, --rm: 종료 시 자동 삭제', output: '/ # _' },
+      { cmd: 'docker run -it --rm alpine /bin/sh', short: '대화형 일회용', desc: '-it: 대화형 터미널, --rm: 종료 시 자동 삭제', output: '/ # ' },
       { cmd: 'docker run -d -e DB_HOST=localhost myapp:1.0', short: '환경변수 전달', desc: '-e: 환경변수를 컨테이너에 전달', output: 'b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7' },
       { cmd: 'docker run -d -v mydata:/app/data myapp:1.0', short: '볼륨 마운트', desc: '-v: 볼륨을 컨테이너에 마운트', output: 'c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8' },
       { cmd: 'docker run -d --network mynet myapp:1.0', short: '네트워크 지정', desc: '--network: 특정 네트워크에 연결', output: 'd4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9' },
@@ -80,7 +80,7 @@ export const COMMAND_CATEGORIES = [
       { cmd: 'docker logs -f myapp', short: '실시간 로그', desc: '-f: follow 모드로 실시간 로그 스트리밍', output: '[실시간 로그 스트리밍 중...]\n2024-01-15 10:31:00 Request received...' },
       { cmd: 'docker logs --tail 100 myapp', short: '최근 N줄', desc: '--tail: 마지막 N줄만 출력', output: '[최근 100줄 출력]' },
       { cmd: 'docker logs --since 1h myapp', short: '시간 기준 로그', desc: '--since: 특정 시간 이후의 로그만 출력', output: '[최근 1시간 로그 출력]' },
-      { cmd: 'docker exec -it myapp /bin/sh', short: '컨테이너 접속', desc: '실행 중인 컨테이너 내부 쉘에 접속', output: '/app # _' },
+      { cmd: 'docker exec -it myapp /bin/sh', short: '컨테이너 접속', desc: '실행 중인 컨테이너 내부 쉘에 접속', output: '/app # ' },
       { cmd: 'docker exec myapp cat /app/config.yml', short: '명령어 실행', desc: '컨테이너 내부에서 단일 명령어 실행', output: 'server:\n  port: 8080' },
       { cmd: 'docker inspect myapp', short: '상세 정보', desc: 'IP, 볼륨, 환경변수 등 모든 설정을 JSON으로 출력', output: '[\n  {\n    "Id": "a1b2c3...",\n    "NetworkSettings": {\n      "IPAddress": "172.17.0.2"\n    }\n  }\n]' },
       { cmd: 'docker diff myapp', short: '파일 변경 확인', desc: '컨테이너에서 변경된 파일 목록 확인', output: 'C /app\nA /app/logs/app.log\nC /tmp' }

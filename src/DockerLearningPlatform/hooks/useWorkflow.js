@@ -42,7 +42,25 @@ export const useWorkflow = () => {
     if (e.key !== 'Enter' || !workflowInput.trim()) return;
 
     const expected = WORKFLOW_STEPS[workflowStep];
-    const isCorrect = workflowInput.trim() === expected.cmd;
+    
+    // 정규화 함수: 연속 공백 제거, 앞뒤 공백 제거
+    const normalize = (str) => str.trim().replace(/\s+/g, ' ');
+    
+    const inputNorm = normalize(workflowInput);
+    const expectedNorm = normalize(expected.cmd);
+    
+    let isCorrect = inputNorm === expectedNorm;
+
+    // docker run, docker build 명령어에 한해 옵션 순서 유연성 허용
+    if (!isCorrect && (expectedNorm.startsWith('docker run') || expectedNorm.startsWith('docker build'))) {
+        const inputParts = inputNorm.split(' ').sort();
+        const expectedParts = expectedNorm.split(' ').sort();
+        
+        if (inputParts.length === expectedParts.length && 
+            inputParts.every((val, index) => val === expectedParts[index])) {
+            isCorrect = true;
+        }
+    }
 
     setWorkflowTerminalHistory((prev) => [
       ...prev,
