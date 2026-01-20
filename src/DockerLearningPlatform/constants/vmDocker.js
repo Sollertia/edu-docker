@@ -20,14 +20,17 @@
 
 export const VM_ANALOGY = {
   vm: {
-    emoji: '🏠',
-    title: 'VM = 단독주택',
-    layers: [
-      { label: '🏃 내 애플리케이션', bg: '#be185d', bold: false },
-      { label: '📚 내 전용 라이브러리', bg: '#9d174d', bold: false },
-      { label: '💿 내 전용 OS (Ubuntu/Windows)', bg: '#831843', bold: true },
-      { label: '🔌 내 전용 전기/수도/가스', bg: '#500724', bold: false },
-      { label: '🏗️ 내 전용 기초공사 (가상 하드웨어)', bg: '#3f0520', bold: false }
+    emoji: '🏘️',
+    title: 'VM = 단독주택 단지',
+    instances: [
+      { name: 'VM 1', items: ['App 1', 'Lib 1', 'Guest OS'] },
+      { name: 'VM 2', items: ['App 2', 'Lib 2', 'Guest OS'] },
+      { name: 'VM 3', items: ['App 3', 'Lib 3', 'Guest OS'] }
+    ],
+    colors: ['#be185d', '#9d174d', '#831843'],
+    shared: [
+      { label: 'Hypervisor (부동산 관리인)', bg: '#500724' },
+      { label: 'Infrastructure (땅)', bg: '#3f0520' }
     ],
     points: [
       { title: '🏗️ 짓는 데 오래 걸림', desc: '기초공사 → 건물 → 입주' },
@@ -38,8 +41,17 @@ export const VM_ANALOGY = {
   docker: {
     emoji: '🏢',
     title: 'Docker = 아파트',
-    apps: ['App1', 'App2', 'App3'],
-    appColors: ['#0891b2', '#0e7490', '#155e75'],
+    instances: [
+      { name: 'Container 1', items: ['App 1', 'Lib 1'] },
+      { name: 'Container 2', items: ['App 2', 'Lib 2'] },
+      { name: 'Container 3', items: ['App 3', 'Lib 3'] }
+    ],
+    colors: ['#0891b2', '#0e7490'],
+    shared: [
+      { label: 'Docker Engine (건물 관리실)', bg: '#0284c7' },
+      { label: 'Host OS (건물 기반)', bg: '#0369a1' },
+      { label: 'Infrastructure (땅)', bg: '#075985' }
+    ],
     points: [
       { title: '⚡ 입주가 빠름', desc: '건물은 이미 있음 → 방만 배정받으면 끝!' },
       { title: '💰 관리비 저렴', desc: '공용시설 함께 사용 → 비용 분담' },
@@ -216,7 +228,8 @@ export const WHY_CONTAINER_LIGHT = {
           type: 'row',
           items: [
             { title: 'Container 1', layers: ['App 1', 'Libs'] },
-            { title: 'Container 2', layers: ['App 2', 'App 3', 'Libs'] }
+            { title: 'Container 2', layers: ['App 2', 'Libs'] },
+            { title: 'Container 3', layers: ['App 3', 'Libs'] }
           ]
         },
         { type: 'single', name: 'Docker Engine', color: '#0ea5e9', desc: '컨테이너 관리' },

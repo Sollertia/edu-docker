@@ -223,17 +223,40 @@ const VmCard = () => (
       padding: '16px',
       marginBottom: '16px'
     }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        {VM_ANALOGY.vm.layers.map((item, i) => (
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+        {VM_ANALOGY.vm.instances.map((instance, i) => (
+          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {instance.items.map((item, j) => (
+              <div
+                key={j}
+                style={{
+                  padding: '8px',
+                  background: VM_ANALOGY.vm.colors[j % VM_ANALOGY.vm.colors.length],
+                  borderRadius: '6px',
+                  textAlign: 'center',
+                  fontSize: '0.75rem',
+                  color: '#fff',
+                  fontWeight: item.includes('OS') ? '600' : '400'
+                }}
+              >
+                {item}
+              </div>
+            ))}
+            <div style={{ textAlign: 'center', fontSize: '0.7rem', color: '#fda4af' }}>{instance.name}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        {VM_ANALOGY.vm.shared.map((item, i) => (
           <div
             key={i}
             style={{
-              padding: item.bold ? '12px' : '10px',
+              padding: '10px',
               background: item.bg,
               borderRadius: '8px',
               textAlign: 'center',
-              fontSize: item.bold ? '0.85rem' : '0.8rem',
-              fontWeight: item.bold ? '600' : '400'
+              fontSize: '0.8rem',
+              color: '#fff'
             }}
           >
             {item.label}
@@ -268,53 +291,46 @@ const DockerCard = () => (
       padding: '16px',
       marginBottom: '16px'
     }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        <div style={{ display: 'flex', gap: '6px' }}>
-          {VM_ANALOGY.docker.apps.map((app, i) => (
-            <div
-              key={i}
-              style={{
-                flex: 1,
-                padding: '10px',
-                background: VM_ANALOGY.docker.appColors[i],
-                borderRadius: '8px',
-                textAlign: 'center',
-                fontSize: '0.75rem'
-              }}
-            >
-              {app}
-            </div>
-          ))}
-        </div>
-        <div style={{
-          padding: '12px',
-          background: '#0284c7',
-          borderRadius: '8px',
-          textAlign: 'center',
-          fontSize: '0.85rem'
-        }}>
-          Docker Engine (건물 관리인/컨트롤러)
-        </div>
-        <div style={{
-          padding: '12px',
-          background: '#0369a1',
-          borderRadius: '8px',
-          textAlign: 'center',
-          fontSize: '0.85rem',
-          fontWeight: '600',
-          border: '2px dashed #7dd3fc'
-        }}>
-          공용 OS 커널 (건물 기초/관리자)
-        </div>
-        <div style={{
-          padding: '10px',
-          background: '#075985',
-          borderRadius: '8px',
-          textAlign: 'center',
-          fontSize: '0.8rem'
-        }}>
-          공용 전기/수도/가스
-        </div>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+        {VM_ANALOGY.docker.instances.map((instance, i) => (
+          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {instance.items.map((item, j) => (
+              <div
+                key={j}
+                style={{
+                  padding: '8px',
+                  background: VM_ANALOGY.docker.colors[j % VM_ANALOGY.docker.colors.length],
+                  borderRadius: '6px',
+                  textAlign: 'center',
+                  fontSize: '0.75rem',
+                  color: '#fff'
+                }}
+              >
+                {item}
+              </div>
+            ))}
+            <div style={{ textAlign: 'center', fontSize: '0.7rem', color: '#67e8f9' }}>{instance.name}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        {VM_ANALOGY.docker.shared.map((item, i) => (
+          <div
+            key={i}
+            style={{
+              padding: '10px',
+              background: item.bg,
+              borderRadius: '8px',
+              textAlign: 'center',
+              fontSize: '0.8rem',
+              color: '#fff',
+              border: item.label.includes('Host OS') ? '2px dashed #7dd3fc' : 'none',
+              fontWeight: item.label.includes('Host OS') ? '600' : '400'
+            }}
+          >
+            {item.label}
+          </div>
+        ))}
       </div>
     </div>
     <div style={{ color: '#67e8f9', fontSize: '0.85rem', lineHeight: '1.7' }}>
