@@ -19,8 +19,8 @@
 
 export const TABS = [
   { id: 'why', emoji: '❓', label: 'Why Docker?' },
-  { id: 'concept', emoji: '💡', label: '핵심 개념' },
   { id: 'vmvsdocker', emoji: '⚡', label: 'VM vs Docker' },
+  { id: 'concept', emoji: '💡', label: '핵심 개념' },
   { id: 'dockerfile', emoji: '📝', label: 'Dockerfile' },
   { id: 'commands', emoji: '💻', label: '명령어 실습' },
   { id: 'network', emoji: '🔌', label: '네트워크' },
