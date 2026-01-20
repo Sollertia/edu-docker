@@ -47,7 +47,10 @@ export {
   getInstructionKeyword,
   getInstructionArgs,
   CMD_VS_ENTRYPOINT,
-  DOCKERIGNORE_DATA
+  DOCKERIGNORE_DATA,
+  MULTISTAGE_BUILD_DATA,
+  ENV_VS_ARG_DATA,
+  TROUBLESHOOTING_DATA
 } from './imageLayers';
 
 // Commands
