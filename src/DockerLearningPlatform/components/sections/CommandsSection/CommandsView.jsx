@@ -107,8 +107,14 @@ const CommandList = ({ commands, currentIndex, onIndexChange }) => (
         }}>
           {cmd.short}
         </div>
-        <code style={{ color: '#8b949e', fontSize: '0.7rem' }}>
-          {cmd.cmd.length > 40 ? cmd.cmd.substring(0, 40) + '...' : cmd.cmd}
+        <code style={{ 
+          color: '#8b949e', 
+          fontSize: '0.7rem',
+          display: 'block',
+          marginTop: '4px',
+          wordBreak: 'break-all'
+        }}>
+          {cmd.cmd}
         </code>
       </div>
     ))}
