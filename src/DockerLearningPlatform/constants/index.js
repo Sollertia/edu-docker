@@ -45,7 +45,9 @@ export {
 export {
   IMAGE_LAYERS_DETAIL,
   getInstructionKeyword,
-  getInstructionArgs
+  getInstructionArgs,
+  CMD_VS_ENTRYPOINT,
+  DOCKERIGNORE_DATA
 } from './imageLayers';
 
 // Commands
@@ -62,7 +64,8 @@ export {
   COMPOSE_RESTART_POLICIES,
   COMPOSE_COMMANDS,
   COMPOSE_NETWORK_ISOLATION_EXAMPLE,
-  COMPOSE_DEPENDS_ON_ORDER
+  COMPOSE_DEPENDS_ON_ORDER,
+  COMPOSE_HEALTHCHECK
 } from './compose';
 
 // VM vs Docker

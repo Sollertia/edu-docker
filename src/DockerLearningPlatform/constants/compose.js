@@ -24,6 +24,7 @@ export const COMPOSE_SECTIONS = [
   'volumes',
   'networks',
   'depends_on',
+  'healthcheck',
   '명령어'
 ];
 
@@ -89,3 +90,88 @@ export const COMPOSE_DEPENDS_ON_ORDER = [
   { service: 'redis', color: '#fca5a5', bg: 'rgba(239,68,68,0.3)' },
   { service: 'app', color: '#86efac', bg: 'rgba(34,197,94,0.3)' }
 ];
+
+// Healthcheck 데이터
+export const COMPOSE_HEALTHCHECK = {
+  title: 'healthcheck',
+  subtitle: '서비스가 진짜 준비됐는지 확인하는 건강검진',
+  analogy: '의사의 건강검진 - OK 받아야 다음 진행!',
+  problem: {
+    title: 'depends_on의 한계',
+    description: 'depends_on은 컨테이너 "시작"만 확인, 서비스 "준비"는 확인 안 함!',
+    example: {
+      situation: 'MySQL 컨테이너가 시작됨',
+      problem: '하지만 DB 초기화 중이라 연결 불가!',
+      result: 'Spring Boot 앱이 시작하자마자 DB 연결 실패'
+    }
+  },
+  options: [
+    { name: 'test', desc: '건강 확인 명령어', required: true },
+    { name: 'interval', desc: '검사 주기', default: '30s', example: '10s' },
+    { name: 'timeout', desc: '응답 대기 시간', default: '30s', example: '5s' },
+    { name: 'retries', desc: '실패 허용 횟수', default: '3', example: '5' },
+    { name: 'start_period', desc: '시작 대기 시간', default: '0s', example: '40s' }
+  ],
+  examples: {
+    mysql: {
+      title: 'MySQL',
+      service: 'db',
+      image: 'mysql:8.0',
+      test: '["CMD", "mysqladmin", "ping", "-h", "localhost"]',
+      description: 'mysqladmin ping으로 MySQL 서버 응답 확인'
+    },
+    postgres: {
+      title: 'PostgreSQL',
+      service: 'db',
+      image: 'postgres:15',
+      test: '["CMD-SHELL", "pg_isready -U postgres"]',
+      description: 'pg_isready로 PostgreSQL 준비 상태 확인'
+    },
+    redis: {
+      title: 'Redis',
+      service: 'redis',
+      image: 'redis:alpine',
+      test: '["CMD", "redis-cli", "ping"]',
+      description: 'redis-cli ping으로 Redis 응답 확인'
+    },
+    http: {
+      title: 'HTTP 서비스',
+      service: 'app',
+      image: 'myapp:latest',
+      test: '["CMD", "curl", "-f", "http://localhost:8080/health"]',
+      description: 'HTTP 엔드포인트로 앱 상태 확인'
+    }
+  },
+  fullExample: `services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: myapp
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy  # DB가 healthy 될 때까지 대기!
+    environment:
+      - DB_HOST=db`,
+  conditions: [
+    { condition: 'service_started', desc: '컨테이너 시작됨 (기본값)', icon: '🚀' },
+    { condition: 'service_healthy', desc: 'healthcheck 통과', icon: '✅' },
+    { condition: 'service_completed_successfully', desc: '컨테이너 정상 종료 (exit 0)', icon: '🏁' }
+  ],
+  bestPractices: [
+    'start_period를 충분히 설정 (초기화 시간 고려)',
+    'interval은 너무 짧지 않게 (리소스 낭비)',
+    'timeout은 interval보다 짧게',
+    'retries는 일시적 오류 허용할 정도로',
+    'HTTP 서비스는 /health 또는 /actuator/health 엔드포인트 활용'
+  ]
+};

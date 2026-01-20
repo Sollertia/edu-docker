@@ -18,7 +18,7 @@
  * =============================================================================
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SectionNav } from '../../common';
 import {
   COMPOSE_SECTIONS,
@@ -26,7 +26,8 @@ import {
   COMPOSE_FULL_EXAMPLE,
   COMPOSE_RESTART_POLICIES,
   COMPOSE_COMMANDS,
-  COMPOSE_DEPENDS_ON_ORDER
+  COMPOSE_DEPENDS_ON_ORDER,
+  COMPOSE_HEALTHCHECK
 } from '../../../constants';
 
 // ============================================================================
@@ -629,7 +630,212 @@ const DependsOnSection = () => (
 );
 
 // ============================================================================
-// Section 6: Commands
+// Section 6: Healthcheck
+// ============================================================================
+
+const HealthcheckSection = () => {
+  const data = COMPOSE_HEALTHCHECK;
+  const [selectedExample, setSelectedExample] = useState('mysql');
+
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.03)',
+      borderRadius: '20px',
+      padding: '28px',
+      border: '1px solid rgba(255,255,255,0.1)'
+    }}>
+      <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#f472b6' }}>
+        {data.title}
+      </h3>
+      <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '8px', fontSize: '0.9rem' }}>
+        {data.subtitle}
+      </p>
+      <p style={{ textAlign: 'center', color: '#fbbf24', marginBottom: '24px', fontSize: '0.9rem' }}>
+        {data.analogy}
+      </p>
+
+      {/* Problem Section */}
+      <div style={{
+        background: 'rgba(239,68,68,0.1)',
+        borderRadius: '16px',
+        padding: '20px',
+        border: '1px solid rgba(239,68,68,0.3)',
+        marginBottom: '24px'
+      }}>
+        <h4 style={{ color: '#f87171', marginBottom: '12px' }}>{data.problem.title}</h4>
+        <p style={{ color: '#fca5a5', fontSize: '0.9rem', marginBottom: '16px' }}>
+          {data.problem.description}
+        </p>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ padding: '12px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', flex: 1, minWidth: '150px' }}>
+            <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '4px' }}>상황</div>
+            <div style={{ color: '#fca5a5', fontSize: '0.85rem' }}>{data.problem.example.situation}</div>
+          </div>
+          <div style={{ color: '#f87171', fontSize: '1.2rem' }}>→</div>
+          <div style={{ padding: '12px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', flex: 1, minWidth: '150px' }}>
+            <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '4px' }}>문제</div>
+            <div style={{ color: '#fca5a5', fontSize: '0.85rem' }}>{data.problem.example.problem}</div>
+          </div>
+          <div style={{ color: '#f87171', fontSize: '1.2rem' }}>→</div>
+          <div style={{ padding: '12px 16px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', flex: 1, minWidth: '150px' }}>
+            <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginBottom: '4px' }}>결과</div>
+            <div style={{ color: '#f87171', fontSize: '0.85rem', fontWeight: '600' }}>{data.problem.example.result}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+        {/* Options */}
+        <div>
+          <h4 style={{ color: '#e2e8f0', marginBottom: '16px' }}>healthcheck 옵션</h4>
+          <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '12px', padding: '16px' }}>
+            {data.options.map((opt, i) => (
+              <div key={i} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px 12px',
+                background: opt.required ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.03)',
+                borderRadius: '8px',
+                marginBottom: '8px',
+                border: opt.required ? '1px solid rgba(239,68,68,0.3)' : 'none'
+              }}>
+                <div>
+                  <code style={{ color: opt.required ? '#f87171' : '#67e8f9', fontSize: '0.85rem' }}>{opt.name}</code>
+                  {opt.required && <span style={{ marginLeft: '8px', fontSize: '0.7rem', color: '#f87171' }}>필수</span>}
+                  <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '2px' }}>{opt.desc}</div>
+                </div>
+                {opt.default && (
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ color: '#94a3b8', fontSize: '0.7rem' }}>기본: {opt.default}</div>
+                    {opt.example && <div style={{ color: '#86efac', fontSize: '0.75rem' }}>예: {opt.example}</div>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Example Selector */}
+        <div>
+          <h4 style={{ color: '#e2e8f0', marginBottom: '16px' }}>서비스별 예시</h4>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
+            {Object.entries(data.examples).map(([key, ex]) => (
+              <button
+                key={key}
+                onClick={() => setSelectedExample(key)}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '8px',
+                  border: selectedExample === key ? '2px solid #f472b6' : '2px solid transparent',
+                  background: selectedExample === key ? 'rgba(244,114,182,0.2)' : 'rgba(255,255,255,0.05)',
+                  color: selectedExample === key ? '#f9a8d4' : '#94a3b8',
+                  cursor: 'pointer',
+                  fontSize: '0.8rem'
+                }}
+              >
+                {ex.title}
+              </button>
+            ))}
+          </div>
+          <div style={{
+            background: '#0d1117',
+            borderRadius: '12px',
+            padding: '16px',
+            fontFamily: 'monospace'
+          }}>
+            <div style={{ color: '#8b949e', fontSize: '0.75rem', marginBottom: '8px' }}>
+              {data.examples[selectedExample].service}: {data.examples[selectedExample].image}
+            </div>
+            <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.8rem', lineHeight: '1.6' }}>
+{`healthcheck:
+  test: ${data.examples[selectedExample].test}
+  interval: 10s
+  timeout: 5s
+  retries: 5`}
+            </pre>
+            <div style={{
+              marginTop: '12px',
+              padding: '8px 12px',
+              background: 'rgba(34,197,94,0.1)',
+              borderRadius: '8px',
+              fontSize: '0.8rem',
+              color: '#86efac'
+            }}>
+              {data.examples[selectedExample].description}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* depends_on conditions */}
+      <div style={{
+        background: 'rgba(34,197,94,0.1)',
+        borderRadius: '16px',
+        padding: '20px',
+        border: '1px solid rgba(34,197,94,0.3)',
+        marginBottom: '24px'
+      }}>
+        <h4 style={{ color: '#4ade80', marginBottom: '16px' }}>depends_on condition 옵션</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+          {data.conditions.map((cond, i) => (
+            <div key={i} style={{
+              padding: '16px',
+              background: 'rgba(0,0,0,0.2)',
+              borderRadius: '12px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>{cond.icon}</div>
+              <code style={{ color: '#86efac', fontSize: '0.8rem', display: 'block', marginBottom: '4px' }}>{cond.condition}</code>
+              <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{cond.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Full Example */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+        <div>
+          <h4 style={{ color: '#e2e8f0', marginBottom: '12px' }}>전체 예시</h4>
+          <div style={{
+            background: '#0d1117',
+            borderRadius: '12px',
+            padding: '16px',
+            fontFamily: 'monospace',
+            maxHeight: '280px',
+            overflowY: 'auto'
+          }}>
+            <pre style={{ color: '#e6edf3', margin: 0, fontSize: '0.75rem', lineHeight: '1.6' }}>
+              {data.fullExample}
+            </pre>
+          </div>
+        </div>
+
+        <div>
+          <h4 style={{ color: '#e2e8f0', marginBottom: '12px' }}>베스트 프랙티스</h4>
+          <div style={{
+            background: 'rgba(139,92,246,0.1)',
+            borderRadius: '12px',
+            padding: '16px',
+            border: '1px solid rgba(139,92,246,0.3)'
+          }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', color: '#c4b5fd', fontSize: '0.85rem', lineHeight: '1.8' }}>
+              {data.bestPractices.map((tip, i) => <li key={i}>{tip}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// Section 7: Commands
 // ============================================================================
 
 const CommandsSection = () => (
@@ -702,7 +908,8 @@ const SECTION_COMPONENTS = {
   3: VolumesSection,
   4: NetworksSection,
   5: DependsOnSection,
-  6: CommandsSection
+  6: HealthcheckSection,
+  7: CommandsSection
 };
 
 // ============================================================================
