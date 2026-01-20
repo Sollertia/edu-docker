@@ -27,10 +27,10 @@ export const VM_ANALOGY = {
       { label: '📚 내 전용 라이브러리', bg: '#9d174d', bold: false },
       { label: '💿 내 전용 OS (Ubuntu/Windows)', bg: '#831843', bold: true },
       { label: '🔌 내 전용 전기/수도/가스', bg: '#500724', bold: false },
-      { label: '🏗️ 내 땅, 내 기초공사', bg: '#3f0520', bold: false }
+      { label: '🏗️ 내 전용 기초공사 (가상 하드웨어)', bg: '#3f0520', bold: false }
     ],
     points: [
-      { title: '🏗️ 짓는 데 오래 걸림', desc: '땅부터 시작 → 기초공사 → 건물 → 입주' },
+      { title: '🏗️ 짓는 데 오래 걸림', desc: '기초공사 → 건물 → 입주' },
       { title: '💰 유지비가 비쌈', desc: '전기/수도/가스 다 개별 납부' },
       { title: '📦 공간 낭비', desc: '혼자 살아도 큰 집 전체 관리 필요' }
     ]
@@ -193,28 +193,37 @@ export const WHY_CONTAINER_LIGHT = {
       title: 'VM 구조',
       icon: '🏠',
       color: '#8b5cf6',
-      layers: [
-        { name: '내 앱 (Spring Boot)', color: '#22c55e', size: '~100MB', desc: '내가 만든 코드' },
-        { name: '라이브러리 (Java, npm 등)', color: '#3b82f6', size: '~500MB', desc: '앱 실행에 필요한 도구들' },
-        { name: 'Guest OS (Ubuntu 전체)', color: '#ef4444', size: '2~4GB', highlight: true, desc: '⚠️ VM마다 OS 전체 설치!' },
-        { name: 'Hypervisor (VMware 등)', color: '#f59e0b', size: '', desc: 'VM을 만들어주는 프로그램' },
-        { name: 'Host OS (내 컴퓨터 OS)', color: '#64748b', size: '', desc: '실제 컴퓨터의 OS' },
-        { name: 'Hardware (CPU, RAM)', color: '#374151', size: '', desc: '실제 하드웨어' }
+      stack: [
+        {
+          type: 'row',
+          items: [
+            { title: 'VM 1', layers: ['App 1', 'Libs', 'Guest OS'] },
+            { title: 'VM 2', layers: ['App 2', 'Libs', 'Guest OS'] }
+          ]
+        },
+        { type: 'single', name: 'Hypervisor (VMware)', color: '#f59e0b', desc: 'VM 생성 및 관리' },
+        { type: 'single', name: 'Host OS', color: '#64748b', desc: '물리적 서버의 OS' },
+        { type: 'single', name: 'Hardware', color: '#374151', desc: 'CPU, RAM, Disk' }
       ],
-      problem: 'VM 3개 = Ubuntu 3번 설치 = 6~12GB 낭비!'
+      problem: 'VM마다 Guest OS가 있어 무겁고 중복 발생'
     },
     container: {
       title: 'Container 구조',
       icon: '🐳',
       color: '#0ea5e9',
-      layers: [
-        { name: '내 앱 (Spring Boot)', color: '#22c55e', size: '~100MB', desc: '내가 만든 코드' },
-        { name: '라이브러리 (Java, npm 등)', color: '#3b82f6', size: '~500MB', desc: '앱 실행에 필요한 도구들' },
-        { name: 'Docker Engine', color: '#0ea5e9', size: '', desc: '컨테이너를 관리하는 프로그램' },
-        { name: 'Host OS 커널 (공유!)', color: '#64748b', size: '', highlight: true, desc: '✅ 모든 컨테이너가 함께 사용' },
-        { name: 'Hardware (CPU, RAM)', color: '#374151', size: '', desc: '실제 하드웨어' }
+      stack: [
+        {
+          type: 'row',
+          items: [
+            { title: 'Container 1', layers: ['App 1', 'Libs'] },
+            { title: 'Container 2', layers: ['App 2', 'App 3', 'Libs'] }
+          ]
+        },
+        { type: 'single', name: 'Docker Engine', color: '#0ea5e9', desc: '컨테이너 관리' },
+        { type: 'single', name: 'Host OS Kernel', color: '#64748b', highlight: true, desc: '✅ 커널 공유!' },
+        { type: 'single', name: 'Hardware', color: '#374151', desc: 'CPU, RAM, Disk' }
       ],
-      solution: '컨테이너 3개 = Guest OS 0개 = 용량 절약!'
+      solution: 'Guest OS 없이 커널을 공유하여 가볍고 빠름'
     }
   },
   layerExplanation: {
@@ -279,7 +288,7 @@ export const WHY_CONTAINER_LIGHT = {
         name: 'Namespace',
         icon: '📦',
         color: '#8b5cf6',
-        desc: '각 컨테이너에게 "자기만의 세상"을 보여줌',
+        desc: '각 컨테이너에 독립된 "보이는 세계" 제공 (서로 보이지 않도록 분리)',
         analogy: '아파트 호수 - 101호는 102호 내부를 볼 수 없음',
         types: ['프로세스 ID', '네트워크', '파일시스템', '사용자']
       },
@@ -287,14 +296,14 @@ export const WHY_CONTAINER_LIGHT = {
         name: 'cgroups',
         icon: '⚖️',
         color: '#f59e0b',
-        desc: 'CPU, 메모리 사용량을 제한',
+        desc: '컨테이너별 CPU, 메모리등 리소스 사용량을 제한',
         analogy: '전기/수도 계량기 - 각 집의 사용량 관리',
-        types: ['CPU 제한', '메모리 제한', '디스크 I/O', '네트워크 대역폭']
+        types: ['CPU 제한', '메모리 제한', '디스크 I/O 제어', '네트워크 대역폭 제어']
       }
     ],
     summary: {
-      text: 'Docker = Namespace(격리) + cgroups(제한) + 이미지(패키징)',
-      note: '이 기술들은 Linux 커널에 내장 → Docker는 이걸 쉽게 쓰게 해주는 도구'
+      text: 'Docker = Namespace(보이는 세계 분리) + cgroups(쓸 수 있는 자원 제한) + 이미지(실행 환경 패키징)',
+      note: '이 모든 기능은 Linux 커널에 내장되어 있으며 Docker는 이를 쉽게 사용하도록 추상화한 도구'
     }
   }
 };

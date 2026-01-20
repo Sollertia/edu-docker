@@ -293,7 +293,7 @@ const DockerCard = () => (
           textAlign: 'center',
           fontSize: '0.85rem'
         }}>
-          Docker Engine (건물 관리인)
+          Docker Engine (건물 관리인/컨트롤러)
         </div>
         <div style={{
           padding: '12px',
@@ -304,7 +304,7 @@ const DockerCard = () => (
           fontWeight: '600',
           border: '2px dashed #7dd3fc'
         }}>
-          공용 OS 커널 (건물 기초)
+          공용 OS 커널 (건물 기초/관리자)
         </div>
         <div style={{
           padding: '10px',
@@ -421,20 +421,44 @@ const ArchitectureDiagram = () => (
       <h4 style={{ color: '#a78bfa', textAlign: 'center', marginBottom: '16px' }}>
         {WHY_CONTAINER_LIGHT.comparison.vm.icon} {WHY_CONTAINER_LIGHT.comparison.vm.title}
       </h4>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        {WHY_CONTAINER_LIGHT.comparison.vm.layers.map((layer, i) => (
-          <div key={i} style={{
-            padding: layer.highlight ? '14px' : '10px',
-            background: layer.color,
-            borderRadius: '6px',
-            textAlign: 'center',
-            fontSize: '0.85rem',
-            border: layer.highlight ? '2px dashed #fff' : 'none',
-            fontWeight: layer.highlight ? '600' : '400'
-          }}>
-            {layer.name} {layer.size && <span style={{ opacity: 0.8 }}>({layer.size})</span>}
-          </div>
-        ))}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {WHY_CONTAINER_LIGHT.comparison.vm.stack.map((layer, i) => {
+          if (layer.type === 'row') {
+            return (
+              <div key={i} style={{ display: 'flex', gap: '8px' }}>
+                {layer.items.map((item, j) => (
+                  <div key={j} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {item.layers.map((subLayer, k) => (
+                      <div key={k} style={{
+                        padding: '8px',
+                        background: k === 2 ? '#ef4444' : (k === 1 ? '#3b82f6' : '#22c55e'),
+                        borderRadius: '6px',
+                        textAlign: 'center',
+                        fontSize: '0.75rem',
+                        color: '#fff'
+                      }}>
+                        {subLayer}
+                      </div>
+                    ))}
+                    <div style={{ textAlign: 'center', fontSize: '0.7rem', color: '#94a3b8' }}>{item.title}</div>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+          return (
+            <div key={i} style={{
+              padding: '10px',
+              background: layer.color,
+              borderRadius: '6px',
+              textAlign: 'center',
+              fontSize: '0.85rem',
+              color: '#fff'
+            }}>
+              {layer.name}
+            </div>
+          );
+        })}
       </div>
       <div style={{
         marginTop: '12px',
@@ -459,20 +483,46 @@ const ArchitectureDiagram = () => (
       <h4 style={{ color: '#0ea5e9', textAlign: 'center', marginBottom: '16px' }}>
         {WHY_CONTAINER_LIGHT.comparison.container.icon} {WHY_CONTAINER_LIGHT.comparison.container.title}
       </h4>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        {WHY_CONTAINER_LIGHT.comparison.container.layers.map((layer, i) => (
-          <div key={i} style={{
-            padding: layer.highlight ? '14px' : '10px',
-            background: layer.color,
-            borderRadius: '6px',
-            textAlign: 'center',
-            fontSize: '0.85rem',
-            border: layer.highlight ? '2px dashed #7dd3fc' : 'none',
-            fontWeight: layer.highlight ? '600' : '400'
-          }}>
-            {layer.name}
-          </div>
-        ))}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {WHY_CONTAINER_LIGHT.comparison.container.stack.map((layer, i) => {
+          if (layer.type === 'row') {
+            return (
+              <div key={i} style={{ display: 'flex', gap: '8px' }}>
+                {layer.items.map((item, j) => (
+                  <div key={j} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {item.layers.map((subLayer, k) => (
+                      <div key={k} style={{
+                        padding: '8px',
+                        background: subLayer.includes('Libs') ? '#3b82f6' : '#22c55e',
+                        borderRadius: '6px',
+                        textAlign: 'center',
+                        fontSize: '0.75rem',
+                        color: '#fff'
+                      }}>
+                        {subLayer}
+                      </div>
+                    ))}
+                    <div style={{ textAlign: 'center', fontSize: '0.7rem', color: '#94a3b8' }}>{item.title}</div>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+          return (
+            <div key={i} style={{
+              padding: layer.highlight ? '14px' : '10px',
+              background: layer.color,
+              borderRadius: '6px',
+              textAlign: 'center',
+              fontSize: '0.85rem',
+              border: layer.highlight ? '2px dashed #7dd3fc' : 'none',
+              fontWeight: layer.highlight ? '600' : '400',
+              color: '#fff'
+            }}>
+              {layer.name}
+            </div>
+          );
+        })}
       </div>
       <div style={{
         marginTop: '12px',
