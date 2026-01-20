@@ -23,7 +23,7 @@ export const WORKFLOW_STEPS = [
     title: '📦 이미지 빌드',
     description: 'Dockerfile을 사용해 애플리케이션 이미지를 생성합니다',
     cmd: 'docker build -t myapp:1.0 .',
-    output: `[+] Building 45.2s (8/8) FINISHED
+    output: `[+] Building 45.2s (5/5) FINISHED
  => [1/5] FROM eclipse-temurin:17-jdk-alpine
  => [2/5] WORKDIR /app
  => [3/5] COPY target/*.jar app.jar
