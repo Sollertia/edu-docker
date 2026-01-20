@@ -138,6 +138,30 @@ const ContentArea = ({ activeTab }) => {
   return <SectionComponent />;
 };
 
+const Footer = () => (
+  <footer style={{
+    marginTop: '60px',
+    padding: '32px 20px',
+    borderTop: '1px solid rgba(255,255,255,0.1)',
+    textAlign: 'center'
+  }}>
+    <p style={{
+      color: '#64748b',
+      fontSize: '0.9rem',
+      margin: '0 0 4px 0'
+    }}>
+      © 2026 내일배움캠프 Spring 커머스. All rights reserved.
+    </p>
+    <p style={{
+      color: '#64748b',
+      fontSize: '0.9rem',
+      margin: 0
+    }}>
+      Built for learning by Robbie (최원빈)
+    </p>
+  </footer>
+);
+
 // ============================================================================
 // Main Component
 // ============================================================================
@@ -154,6 +178,7 @@ const DockerLearningPlatform = () => {
         <PageTitle />
         <Header activeTab={activeTab} onTabChange={setActiveTab} />
         <ContentArea activeTab={activeTab} />
+        <Footer />
       </div>
     </div>
   );
