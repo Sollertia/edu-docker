@@ -157,7 +157,7 @@ const Footer = () => (
       fontSize: '0.9rem',
       margin: 0
     }}>
-      Built for learning by Robbie (최원빈)
+        Created for educational purposes by Robbie (최원빈)
     </p>
   </footer>
 );
