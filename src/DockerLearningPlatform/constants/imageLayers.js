@@ -309,19 +309,26 @@ export const MULTISTAGE_BUILD_DATA = {
       after: '~150MB',
       reduction: '80% 감소',
       dockerfile: `# Stage 1: 빌드
-FROM maven:3.8-openjdk-17 AS builder
+# Gradle로 빌드 (나중에 버려짐)
+FROM gradle:8.7-jdk17-alpine AS builder
 WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn package -DskipTests
 
-# Stage 2: 실행
+# 의존성 먼저 내려받기 (캐시용)
+COPY build.gradle settings.gradle ./
+# 멀티 모듈이면 필요시 전체 gradle 설정/루트 스크립트 복사
+# COPY gradle gradle
+RUN gradle dependencies --no-daemon || true
+
+# 소스 복사 후 빌드
+COPY . .
+RUN gradle bootJar --no-daemon
+
+# Stage 2: 실행용 (JRE + 결과 JAR만)
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder /app/build/libs/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]`
+ENTRYPOINT ["java","-jar","app.jar"]`
     },
     node: {
       title: 'Node.js (React)',
@@ -331,16 +338,21 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`
       dockerfile: `# Stage 1: 빌드
 FROM node:18-alpine AS builder
 WORKDIR /app
+
+# package.json, package-lock.json만 먼저 복사 (의존성 캐시용)
 COPY package*.json ./
 RUN npm ci
+
+# 나머지 소스 복사 후 빌드
 COPY . .
 RUN npm run build
 
-# Stage 2: 실행
+# Stage 2: 실행 (정적 파일 Nginx로 서빙)
 FROM nginx:alpine
+# 빌드 결과물 복사 (빌드 결과가 /app/dist 라는 가정)
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]`
+CMD ["nginx","-g","daemon off;"]`
     },
     go: {
       title: 'Go',
@@ -348,16 +360,26 @@ CMD ["nginx", "-g", "daemon off;"]`
       after: '~10MB',
       reduction: '99% 감소',
       dockerfile: `# Stage 1: 빌드
-FROM golang:1.21 AS builder
+FROM golang:1.21-alpine AS builder
 WORKDIR /app
-COPY go.* ./
+
+# go.mod, go.sum 먼저 복사해서 의존성 캐시 최적화
+COPY go.mod go.sum ./
 RUN go mod download
+
+# 나머지 소스 복사
 COPY . .
-RUN CGO_ENABLED=0 go build -o main .
+
+# 정적 바이너리 빌드 (CGO 끄고, 릴리즈 빌드)
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
 # Stage 2: 실행
 FROM scratch
 COPY --from=builder /app/main /main
+
+# (선택) 환경변수, 작업 디렉토리 등
+# WORKDIR /        # scratch라 사실 크게 의미는 없음
+
 ENTRYPOINT ["/main"]`
     }
   },
@@ -437,12 +459,12 @@ LABEL version=\${APP_VERSION}
     env: {
       title: 'ENV 사용 예시',
       subtitle: '실행할 때 필요한 값',
-      dockerfile: `# 환경변수 정의
+      dockerfile: `# 환경변수 정의 (컨테이너에서 사용 가능)
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV SERVER_PORT=8080
 ENV DB_HOST=localhost
 
-# Dockerfile에서 사용
+# 이미지 메타데이터에 포트 문서화
 EXPOSE \${SERVER_PORT}
 
 # 실행 시 덮어쓰기 가능
@@ -455,10 +477,10 @@ EXPOSE \${SERVER_PORT}
       dockerfile: `# 빌드 인자 정의
 ARG DEFAULT_PORT=8080
 
-# ARG → ENV로 전달 (런타임에도 사용 가능하게)
+# ARG → ENV로 전달 (빌드/런타임 둘 다에서 사용)
 ENV SERVER_PORT=\${DEFAULT_PORT}
 
-# 이제 컨테이너에서도 SERVER_PORT 사용 가능!
+# 이미지 메타데이터에 포트 문서화
 EXPOSE \${SERVER_PORT}`,
       explanation: 'ARG는 빌드 후 사라지지만, ENV로 복사하면 런타임에도 사용 가능!'
     }
