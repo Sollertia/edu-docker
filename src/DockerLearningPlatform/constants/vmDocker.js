@@ -141,13 +141,13 @@ export const VIRTUALIZATION_HISTORY = {
       },
       solution: '서버 1대에 여러 VM',
       benefits: [
-        '하드웨어 효율 향상 (60~70%)',
+        '하드웨어 효율 향상',
         '서버 구매 없이 VM 생성',
         'AWS, Azure 등 클라우드 탄생'
       ],
       remaining: [
         'Guest OS마다 수 GB 메모리',
-        'VM 부팅에 1~2분 소요',
+        'VM 부팅에 오랜시간 소요',
         '같은 OS를 여러 번 설치 (낭비)'
       ],
       realWorld: 'AWS EC2 (2006): VM을 시간 단위로 빌리는 시대'
@@ -183,7 +183,7 @@ export const VIRTUALIZATION_HISTORY = {
       },
       {
         question: 'VM은 이제 안 쓰나요?',
-        answer: 'VM 위에서 컨테이너를 돌림 (클라우드 = VM + 컨테이너)'
+        answer: '오늘날 많은 클라우드 환경은 기본적으로 VM 위에서 컨테이너를 돌리는 형태가 많다. (ECS on EC2 등)'
       },
       {
         question: '취업에 왜 필요한가요?',

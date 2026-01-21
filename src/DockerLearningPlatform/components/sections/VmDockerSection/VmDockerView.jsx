@@ -837,7 +837,7 @@ const CostTable = ({ showDetail, setShowDetail }) => (
       alignItems: 'center',
       marginBottom: '16px'
     }}>
-      <h4 style={{ color: '#fbbf24' }}>💰 비용 분석</h4>
+      <h4 style={{ color: '#fbbf24' }}>💰 비용 분석 (예시 수치)</h4>
       <button
         onClick={() => setShowDetail(!showDetail)}
         style={{

@@ -64,10 +64,10 @@ export const STEP_CONTENT_SOLUTION = {
 };
 
 export const STEP_CONTENT_BENEFIT = [
-  { icon: '🔄', title: '일관성', desc: '개발/테스트/운영 환경 동일', stat: '배포 실패 90% 감소' },
+  { icon: '🔄', title: '일관성', desc: '개발/테스트/운영 환경 동일', stat: '배포 실패 감소' },
   { icon: '⚡', title: '속도', desc: '서버 세팅 시간 단축', stat: '몇 시간 → 몇 초' },
   { icon: '📈', title: '확장성', desc: '트래픽 증가 시 스케일 아웃', stat: '자동 확장 가능' },
-  { icon: '💰', title: '비용', desc: '자원 효율적 사용', stat: 'VM 대비 6배 효율' }
+  { icon: '💰', title: '비용', desc: '자원 효율적 사용', stat: '일반적으로 더 높은 밀도와 효율을 기대할 수 있다.' }
 ];
 
 export const STEP_CONTENT_WORKFLOW = [
