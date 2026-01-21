@@ -126,7 +126,7 @@ export const VIRTUALIZATION_HISTORY = {
         '새 앱 = 새 서버 구매 (몇 주 소요)',
         '서버실 공간, 전기, 냉각 비용'
       ],
-      realWorld: '넷플릭스 초기: 서버 1000대로 시작 → 확장 한계'
+      realWorld: '넷플릭스 초기 수천 대 수준 물리 서버를 운영 → 확장·신뢰성 문제로 클라우드로 전환'
     },
     {
       id: 'vm',
@@ -150,7 +150,7 @@ export const VIRTUALIZATION_HISTORY = {
         'VM 부팅에 1~2분 소요',
         '같은 OS를 여러 번 설치 (낭비)'
       ],
-      realWorld: 'AWS EC2 (2006): VM을 분 단위로 빌리는 시대'
+      realWorld: 'AWS EC2 (2006): VM을 시간 단위로 빌리는 시대'
     },
     {
       id: 'container',
