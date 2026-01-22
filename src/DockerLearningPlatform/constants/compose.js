@@ -34,8 +34,7 @@ export const COMPOSE_BENEFITS = [
   { icon: '👥', title: '팀 공유', desc: 'Git으로 설정 공유 및 버전 관리' }
 ];
 
-export const COMPOSE_FULL_EXAMPLE = `version: '3.8'
-
+export const COMPOSE_FULL_EXAMPLE = `
 services:
   app:                          # Spring Boot
     build: .
