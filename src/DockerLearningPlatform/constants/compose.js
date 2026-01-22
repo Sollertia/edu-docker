@@ -36,7 +36,7 @@ export const COMPOSE_BENEFITS = [
 
 export const COMPOSE_FULL_EXAMPLE = `
 services:
-  app:                          # Spring Boot
+  app:                                       # Spring Boot
     build: .
     ports:
       - "8080:8080"
@@ -46,20 +46,30 @@ services:
     depends_on:
       - db
       - redis
+    networks:
+      - mynet
 
-  db:                           # MySQL
+  db:                                       # MySQL
     image: mysql:8.0
     volumes:
       - db-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: myapp
+    networks:
+      - mynet
 
-  redis:                        # Redis
+  redis:                                    # Redis
     image: redis:alpine
+    networks:
+      - mynet
 
 volumes:
-  db-data:`;
+  db-data:
+
+networks:
+  mynet:
+    driver: bridge`;
 
 export const COMPOSE_RESTART_POLICIES = [
   { policy: 'no', desc: '재시작 안 함 (기본값)' },
