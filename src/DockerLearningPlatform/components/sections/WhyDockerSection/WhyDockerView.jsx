@@ -30,6 +30,7 @@ import {
   STEP_CONTENT_CAUSE,
   STEP_CONTENT_SOLUTION,
   STEP_CONTENT_BENEFIT,
+  STEP_CONTENT_DEVSETUP,
   STEP_CONTENT_WORKFLOW
 } from '../../../constants';
 
@@ -94,7 +95,8 @@ export const WhyDockerView = ({
         {whyStep === 1 && <StepCause />}
         {whyStep === 2 && <StepSolution />}
         {whyStep === 3 && <StepBenefit />}
-        {whyStep === 4 && <StepWorkflow />}
+        {whyStep === 4 && <StepDevSetup />}
+        {whyStep === 5 && <StepWorkflow />}
       </div>
 
       {/* Navigation Buttons */}
@@ -242,7 +244,113 @@ const StepBenefit = () => (
   </div>
 );
 
-// Step 4: Workflow
+// Step 4: Dev Setup
+const StepDevSetup = () => {
+  const [selectedExample, setSelectedExample] = React.useState(0);
+  const { traditional, docker, examples } = STEP_CONTENT_DEVSETUP;
+  const currentExample = examples[selectedExample];
+
+  return (
+    <div>
+      {/* Before vs After 비교 */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+        {/* 예전 방식 */}
+        <div style={{ background: 'rgba(239,68,68,0.08)', borderRadius: '14px', padding: '16px', border: '1px solid rgba(239,68,68,0.25)' }}>
+          <h4 style={{ color: '#f87171', fontSize: '0.95rem', marginBottom: '12px' }}>{traditional.title}</h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {traditional.steps.map((step, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#fca5a5' }}>
+                <span>{step.icon}</span>
+                <span>{step.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Docker 방식 */}
+        <div style={{ background: 'rgba(34,197,94,0.08)', borderRadius: '14px', padding: '16px', border: '1px solid rgba(34,197,94,0.25)' }}>
+          <h4 style={{ color: '#4ade80', fontSize: '0.95rem', marginBottom: '12px' }}>{docker.title}</h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {docker.steps.map((step, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#86efac' }}>
+                <span>{step.icon}</span>
+                <span>{step.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 소프트웨어 선택 탭 */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '16px' }}>
+        {examples.map((ex, i) => (
+          <button
+            key={i}
+            onClick={() => setSelectedExample(i)}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '20px',
+              border: selectedExample === i ? '2px solid #00d4ff' : '1px solid rgba(255,255,255,0.15)',
+              background: selectedExample === i ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.05)',
+              color: selectedExample === i ? '#00d4ff' : '#94a3b8',
+              cursor: 'pointer',
+              fontSize: '0.85rem',
+              fontWeight: selectedExample === i ? '600' : '400',
+              transition: 'all 0.2s'
+            }}
+          >
+            {ex.icon} {ex.name}
+          </button>
+        ))}
+      </div>
+
+      {/* 선택된 예시 비교 */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '12px', alignItems: 'stretch' }}>
+        {/* 예전 방식 터미널 */}
+        <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(239,68,68,0.3)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444' }} />
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#eab308' }} />
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e' }} />
+            <span style={{ color: '#94a3b8', fontSize: '0.75rem', marginLeft: '8px' }}>직접 설치</span>
+          </div>
+          <pre style={{ color: '#fca5a5', fontSize: '0.75rem', margin: 0, whiteSpace: 'pre-wrap', lineHeight: '1.6', fontFamily: 'monospace' }}>
+            {currentExample.traditional}
+          </pre>
+        </div>
+
+        {/* 화살표 */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+          <div style={{ color: '#22c55e', fontSize: '1.5rem', fontWeight: '700' }}>VS</div>
+        </div>
+
+        {/* Docker 방식 터미널 */}
+        <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(34,197,94,0.3)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444' }} />
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#eab308' }} />
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e' }} />
+            <span style={{ color: '#94a3b8', fontSize: '0.75rem', marginLeft: '8px' }}>Docker 🐳</span>
+          </div>
+          <pre style={{ color: '#86efac', fontSize: '0.75rem', margin: 0, whiteSpace: 'pre-wrap', lineHeight: '1.6', fontFamily: 'monospace' }}>
+            {currentExample.dockerCmd}
+          </pre>
+          <div style={{ marginTop: '12px', padding: '8px 12px', background: 'rgba(34,197,94,0.15)', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#4ade80', fontSize: '0.8rem', fontWeight: '600' }}>⚡ {currentExample.time}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 하단 팁 */}
+      <div style={{ marginTop: '16px', padding: '12px 16px', background: 'rgba(0,212,255,0.08)', borderRadius: '10px', border: '1px solid rgba(0,212,255,0.2)', textAlign: 'center' }}>
+        <span style={{ color: '#7dd3fc', fontSize: '0.8rem' }}>
+          💡 다 쓴 후: <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px', color: '#86efac' }}>docker stop my-{currentExample.name.toLowerCase()}</code> → <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px', color: '#86efac' }}>docker rm my-{currentExample.name.toLowerCase()}</code> 깔끔 삭제!
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// Step 5: Workflow
 const StepWorkflow = () => (
   <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
     {STEP_CONTENT_WORKFLOW.map((step, i) => (
